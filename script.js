@@ -1,5 +1,9 @@
-$(document).ready(function () {
-    // Generate yoga pose cards from hard-coded json.
+$(document).ready(() => {
+    // Calculate total duration of given yoga sequence in minutes.
+    let sequenceDuration = 0;
+    sequence.map((pose) => (sequenceDuration += pose.duration * 60));
+
+    // ====================== GENERATE YOGA CARDS ======================= //
     let output = "";
     $.each(sequence, (i, info) => {
         output += `<div class="pose-card" data-switch=${info.switch} data-duration=${info.duration}>
@@ -16,7 +20,7 @@ $(document).ready(function () {
     const poses = $(".pose-card");
     let index = 0;
 
-    function nextPose() {
+    const nextPose = () => {
         poses.removeClass("active-pose");
         const currentPose = poses.eq(index);
         currentPose.addClass("active-pose");
@@ -28,52 +32,76 @@ $(document).ready(function () {
         } else {
             index = 0;
         }
-    }
+    };
 
     // Start routine on click.
     $("#play-pause-btn").click(nextPose);
+
+    // ====================  GLOBAL TIMER ==================== //
+
+    const setTimer = (duration) => {
+        let timer = duration,
+            minutes,
+            seconds;
+        const yogaTimer = setInterval(() => {
+            minutes = parseInt(timer / 60);
+            seconds = parseInt(timer % 60);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            $("#timer").text(`${minutes}:${seconds}`);
+
+            // When timer reaches 0, clear interval
+            if (--timer < 0) {
+                clearInterval(yogaTimer);
+            }
+        }, 1000);
+    };
+
+    setTimer(sequenceDuration);
 });
 
-// Hard-coded sequence from Kit.
-const sequence = {
-    0: {
+// ==================== HARD-CODED SEQUENCE ==================== //
+const sequence = [
+    {
         name: "5 mins Classical sun salutations",
         duration: 5,
         switch: false,
     },
-    1: {
+    {
         name: "Knee up",
         duration: 1,
         switch: true,
     },
-    2: {
+    {
         name: "Resolve w palms together",
         duration: 3,
         switch: true,
     },
-    3: {
+    {
         name: "Hands to sides/back",
         duration: 1,
         switch: false,
     },
-    4: {
+    {
         name: "Triangle",
         duration: 2,
         switch: true,
     },
-    5: {
+    {
         name: "Resolved triangle",
         duration: 1,
         switch: true,
     },
-    6: {
+    {
         name: "Tadasana -> W1 -> humble -> heel-up -> prep for W3",
         duration: 1,
         switch: true,
     },
-    7: {
+    {
         name: "Tadasana -> W1 -> heel-up -> W3",
         duration: 1,
         switch: true,
     },
-};
+];
