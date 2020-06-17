@@ -2,7 +2,7 @@ $(document).ready(function () {
     // Generate yoga pose cards from hard-coded json.
     let output = "";
     $.each(sequence, (i, info) => {
-        output += `<div data-switch=${info.switch} data-duration=${info.duration} class="pose-card">
+        output += `<div class="pose-card" data-switch=${info.switch} data-duration=${info.duration}>
               <h2>${info.name}</h2>
               <img src="./assets/yoga-stick.png" width=120 />
               <h3>Duration: ${info.duration} min</h3>
@@ -21,7 +21,7 @@ $(document).ready(function () {
         const currentPose = poses.eq(index);
         currentPose.addClass("active-pose");
 
-        // If not last pose, play next pose, else reset index.
+        // If not final pose, play next pose, else reset index.
         if (index < poses.length) {
             index++;
             setTimeout(nextPose, currentPose.data().duration * 500);
