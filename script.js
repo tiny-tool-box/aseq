@@ -1,7 +1,7 @@
 $(document).ready(() => {
     let totalDuration = 0;
     let isStopped = true;
-    let timeLeftInSeconds;
+    let timeLeft;
     let yogaTimer = "paused";
 
     // Calculate total duration of given yoga sequence in minutes.
@@ -25,14 +25,16 @@ $(document).ready(() => {
     let index = 0;
 
     const nextPose = () => {
-        $poses.removeClass("active-pose");
-        const currentPose = $poses.eq(index);
-        currentPose.addClass("active-pose");
+        if (yogaTimer != "paused") {
+            $poses.removeClass("active-pose");
+            const currentPose = $poses.eq(index);
+            currentPose.addClass("active-pose");
 
-        // If not final pose and not paused, play next pose, else reset index.
-        if (index < $poses.length && yogaTimer != "paused") {
-            index++;
-            setTimeout(nextPose, currentPose.data().duration * 1000);
+            // If not final pose and not paused, play next pose, else reset index.
+            if (index < $poses.length) {
+                index++;
+                setTimeout(nextPose, currentPose.data().duration * 1000);
+            }
         }
     };
 
@@ -41,7 +43,7 @@ $(document).ready(() => {
         let $btn = $("#play-pause-btn");
         $btn.text() == "play" ? $btn.text("pause") : $btn.text("play");
         setTimeout(nextPose, 1000);
-        setTimer(totalDuration);
+        setTimer(timeLeft || totalDuration);
     });
 
     // ====================  GLOBAL TIMER ==================== //
@@ -60,7 +62,7 @@ $(document).ready(() => {
 
                 $("#timer").text(`${minutes}:${seconds}`);
 
-                timeLeftInSeconds = duration--;
+                timeLeft = duration--;
 
                 // When timer reaches 0, clear interval.
                 if (--timer < 0) {
