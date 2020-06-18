@@ -1,7 +1,11 @@
 $(document).ready(() => {
+    let totalDuration = 0;
+    let isStopped = true;
+    let timeLeftInSeconds;
+    let yogaTimer = "paused";
+
     // Calculate total duration of given yoga sequence in minutes.
-    let sequenceDuration = 0;
-    sequence.map((pose) => (sequenceDuration += pose.duration * 60));
+    sequence.map((pose) => (totalDuration += pose.duration * 60));
 
     // ====================== GENERATE YOGA CARDS ======================= //
     let output = "";
@@ -17,25 +21,28 @@ $(document).ready(() => {
     $("#pose-container").html(output);
 
     // Cycle through all poses on timer.
-    const poses = $(".pose-card");
+    const $poses = $(".pose-card");
     let index = 0;
 
     const nextPose = () => {
-        poses.removeClass("active-pose");
-        const currentPose = poses.eq(index);
+        $poses.removeClass("active-pose");
+        const currentPose = $poses.eq(index);
         currentPose.addClass("active-pose");
 
-        // If not final pose, play next pose, else reset index.
-        if (index < poses.length) {
+        // If not final pose and not paused, play next pose, else reset index.
+        if (index < $poses.length && yogaTimer != "paused") {
             index++;
-            setTimeout(nextPose, currentPose.data().duration * 500);
-        } else {
-            index = 0;
+            setTimeout(nextPose, currentPose.data().duration * 1000);
         }
     };
 
-    // Start routine on click.
-    $("#play-pause-btn").click(nextPose);
+    // Start routine and timer on click, or pause if already started.
+    $("#play-pause-btn").click(() => {
+        let $btn = $("#play-pause-btn");
+        $btn.text() == "play" ? $btn.text("pause") : $btn.text("play");
+        setTimeout(nextPose, 1000);
+        setTimer(totalDuration);
+    });
 
     // ====================  GLOBAL TIMER ==================== //
 
@@ -43,23 +50,28 @@ $(document).ready(() => {
         let timer = duration,
             minutes,
             seconds;
-        const yogaTimer = setInterval(() => {
-            minutes = parseInt(timer / 60);
-            seconds = parseInt(timer % 60);
+        if (yogaTimer == "paused") {
+            yogaTimer = setInterval(() => {
+                minutes = parseInt(timer / 60);
+                seconds = parseInt(timer % 60);
 
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
 
-            $("#timer").text(`${minutes}:${seconds}`);
+                $("#timer").text(`${minutes}:${seconds}`);
 
-            // When timer reaches 0, clear interval
-            if (--timer < 0) {
-                clearInterval(yogaTimer);
-            }
-        }, 1000);
+                timeLeftInSeconds = duration--;
+
+                // When timer reaches 0, clear interval.
+                if (--timer < 0) {
+                    clearInterval(yogaTimer);
+                }
+            }, 1000);
+        } else {
+            clearInterval(yogaTimer);
+            yogaTimer = "paused";
+        }
     };
-
-    setTimer(sequenceDuration);
 });
 
 // ==================== HARD-CODED SEQUENCE ==================== //
