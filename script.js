@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    let poseStartTime, totalTimeLeft, timeOfPause, timeSincePoseStart, timeOutId;
+    let poseStartTime, totalTimeLeft, timeOfPause, timeSincePoseStart, poseTimeoutId;
     let totalDuration = 0;
     let isPaused = true;
 
@@ -24,37 +24,37 @@ $(document).ready(() => {
     let poseIndex = 0;
 
     const nextPose = () => {
-        if (!isPaused) {
+        // If not paused and poses remaining, play next pose.
+        if (!isPaused && poseIndex < $poses.length) {
+            $poses.removeClass("active-pose");
             const currentPose = $poses.eq(poseIndex);
             const currentPoseDuration = currentPose.data().duration * 1000;
 
-            $poses.removeClass("active-pose");
             currentPose.addClass("active-pose");
 
             poseStartTime = new Date();
 
-            // If not final pose and not paused, play next pose, else reset index.
-            if (poseIndex < $poses.length) {
-                poseIndex++;
-                // clearTimeout(timeOutId);
-                console.log("remaining time until next pose is called :>> ", currentPoseDuration - timeSincePoseStart);
-                setTimeout(nextPose, currentPoseDuration - timeSincePoseStart);
-            }
+            // clearTimeout(timeOutId);
+            console.log("remaining time until next pose is called :>> ", currentPoseDuration - timeSincePoseStart);
+            setTimeout(nextPose, currentPoseDuration);
+            poseIndex++;
         }
     };
 
     // Start routine and timer on click, or pause if already started.
-    $("#play-pause-btn").click(() => {
-        let $btn = $("#play-pause-btn");
-        if (!isPaused) {
-            timeOfPause = new Date();
-            console.log("timeOfPause :>> ", timeOfPause);
-            timeSincePoseStart = timeOfPause - poseStartTime;
-            console.log("timeSincePoseStart/1000 :>> ", timeSincePoseStart / 1000);
-        }
-        $btn.text() == "play" ? $btn.text("pause") : $btn.text("play");
-        setTimeout(nextPose, 1000);
+    $("#play-btn").click(() => {
+        isPaused = false;
+        poseTimeoutId = setTimeout(nextPose, 1000);
         setTimer(totalTimeLeft || totalDuration);
+    });
+
+    $("#pause-btn").click(() => {
+        isPaused = true;
+        timeOfPause = new Date();
+        clearTimeout(poseTimeoutId);
+        clearInterval(yogaTimer);
+        timeSincePoseStart = timeOfPause - poseStartTime;
+        console.log("timeSincePoseStart :>> ", timeSincePoseStart);
     });
 
     // ====================  GLOBAL TIMER ==================== //
@@ -63,8 +63,7 @@ $(document).ready(() => {
         let timer = duration,
             minutes,
             seconds;
-        if (isPaused) {
-            isPaused = false;
+        if (!isPaused) {
             yogaTimer = setInterval(() => {
                 minutes = parseInt(timer / 60);
                 seconds = parseInt(timer % 60);
