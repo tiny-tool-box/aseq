@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    let poseStartTime, totalTimeLeft, timeOfPause, timeSincePoseStart, poseTimeoutId;
+    let poseStartTime, totalTimeLeft, timeOfPause, poseTimeRemaining, poseTimeoutId, currentPose, currentPoseDuration;
     let totalDuration = 0;
     let isPaused = true;
 
@@ -27,34 +27,41 @@ $(document).ready(() => {
         // If not paused and poses remaining, play next pose.
         if (!isPaused && poseIndex < $poses.length) {
             $poses.removeClass("active-pose");
-            const currentPose = $poses.eq(poseIndex);
-            const currentPoseDuration = currentPose.data().duration * 1000;
+            currentPose = $poses.eq(poseIndex);
+            currentPoseDuration = currentPose.data().duration * 10000;
 
             currentPose.addClass("active-pose");
-
             poseStartTime = new Date();
-
-            // clearTimeout(timeOutId);
-            console.log("remaining time until next pose is called :>> ", currentPoseDuration - timeSincePoseStart);
-            setTimeout(nextPose, currentPoseDuration);
-            poseIndex++;
+            poseTimeoutId = setTimeout(() => {
+                nextPose();
+                poseIndex++;
+            }, poseTimeRemaining || currentPoseDuration);
         }
     };
 
     // Start routine and timer on click, or pause if already started.
     $("#play-btn").click(() => {
+        $("button").removeClass("active-button");
+        $("#play-btn").addClass("active-button");
+
         isPaused = false;
-        poseTimeoutId = setTimeout(nextPose, 1000);
+
+        setTimeout(nextPose, 1000);
         setTimer(totalTimeLeft || totalDuration);
     });
 
     $("#pause-btn").click(() => {
+        $("button").removeClass("active-button");
+        $("#pause-btn").addClass("active-button");
+
         isPaused = true;
+
         timeOfPause = new Date();
+
         clearTimeout(poseTimeoutId);
         clearInterval(yogaTimer);
-        timeSincePoseStart = timeOfPause - poseStartTime;
-        console.log("timeSincePoseStart :>> ", timeSincePoseStart);
+
+        poseTimeRemaining = currentPoseDuration - (timeOfPause - poseStartTime);
     });
 
     // ====================  GLOBAL TIMER ==================== //

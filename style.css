@@ -36,3 +36,7 @@ button {
     border: orange 2px solid;
     background-color: yellow;
 }
+
+.active-button {
+    background-color: lightblue;
+}
