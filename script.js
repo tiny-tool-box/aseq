@@ -2,6 +2,7 @@ $(document).ready(() => {
     let poseStartTime, totalTimeLeft, timeOfPause, poseTimeRemaining, poseTimeoutId, currentPose, currentPoseDuration;
     let totalDuration = 0;
     let isPaused = true;
+    const poseEndWarningTimeInSec = 3000;
 
     // Calculate total duration of given yoga sequence in minutes.
     sequence.map((pose) => (totalDuration += pose.duration * 60));
@@ -28,14 +29,18 @@ $(document).ready(() => {
         if (!isPaused && poseIndex < $poses.length) {
             $poses.removeClass("active-pose");
             currentPose = $poses.eq(poseIndex);
-            currentPoseDuration = currentPose.data().duration * 10000;
+            currentPoseDuration = currentPose.data().duration * 5000;
 
             currentPose.addClass("active-pose");
             poseStartTime = new Date();
             poseTimeoutId = setTimeout(() => {
-                nextPose();
+                currentPose.addClass("done").removeClass("almost-done");
                 poseIndex++;
+                nextPose();
             }, poseTimeRemaining || currentPoseDuration);
+            poseEndWarningTimeoutId = setTimeout(() => {
+                currentPose.addClass("almost-done");
+            }, poseTimeRemaining - poseEndWarningTimeInSec || currentPoseDuration - poseEndWarningTimeInSec);
         }
     };
 
@@ -44,9 +49,10 @@ $(document).ready(() => {
         $("button").removeClass("active-button");
         $("#play-btn").addClass("active-button");
 
+        poseStartTime = new Date();
         isPaused = false;
 
-        setTimeout(nextPose, 1000);
+        nextPose();
         setTimer(totalTimeLeft || totalDuration);
     });
 
@@ -59,10 +65,13 @@ $(document).ready(() => {
         timeOfPause = new Date();
 
         clearTimeout(poseTimeoutId);
+        clearTimeout(poseEndWarningTimeoutId);
         clearInterval(yogaTimer);
 
         poseTimeRemaining = currentPoseDuration - (timeOfPause - poseStartTime);
     });
+
+    // ====================  END OF POSE INDICATOR  ==================== //
 
     // ====================  GLOBAL TIMER ==================== //
 
