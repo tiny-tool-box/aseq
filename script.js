@@ -2,7 +2,7 @@ $(document).ready(() => {
     let poseStartTime, totalTimeLeft, timeOfPause, poseTimeRemaining, poseTimeoutId, currentPose, currentPoseDuration;
     let totalDuration = 0;
     let isPaused = true;
-    const poseEndWarningTimeInSec = 3000;
+    const poseEndWarningTime = 5000;
 
     // Calculate total duration of given yoga sequence in minutes.
     sequence.map((pose) => (totalDuration += pose.duration * 60));
@@ -10,11 +10,11 @@ $(document).ready(() => {
     // ====================== GENERATE YOGA CARDS ======================= //
     let output = "";
     $.each(sequence, (i, info) => {
-        output += `<div class="pose-card" data-switch=${info.switch} data-duration=${info.duration}>
+        output += `<div class="pose-card" data-switchside=${info.switchSide} data-duration=${info.duration}>
               <h2>${info.name}</h2>
               <img src="./assets/yoga-stick.png" width=120 />
               <h3>Duration: ${info.duration} min</h3>
-              <h5>switch sides? ${info.switch}</h5>
+              <h5>switchside? ${info.switchSide}</h5>
           </div>`;
     });
 
@@ -24,23 +24,34 @@ $(document).ready(() => {
     const $poses = $(".pose-card");
     let poseIndex = 0;
 
-    const nextPose = () => {
+    const setPose = () => {
         // If not paused and poses remaining, play next pose.
         if (!isPaused && poseIndex < $poses.length) {
             $poses.removeClass("active-pose");
-            currentPose = $poses.eq(poseIndex);
-            currentPoseDuration = currentPose.data().duration * 5000;
 
+            currentPose = $poses.eq(poseIndex);
             currentPose.addClass("active-pose");
+
+            currentPoseDuration = currentPose.data().duration * 5000;
             poseStartTime = new Date();
+
             poseTimeoutId = setTimeout(() => {
-                currentPose.addClass("done").removeClass("almost-done");
-                poseIndex++;
-                nextPose();
+                if (currentPose.data().switchside) {
+                    // Set "switchside" data attribute to false after first switch.
+                    currentPose.data().switchside = false;
+                    currentPose.addClass("switch-side active-pose").removeClass("almost-done");
+                    setPose();
+                } else {
+                    currentPose.addClass("done").removeClass("almost-done");
+                    poseIndex++;
+                    setPose();
+                }
             }, poseTimeRemaining || currentPoseDuration);
             poseEndWarningTimeoutId = setTimeout(() => {
-                currentPose.addClass("almost-done");
-            }, poseTimeRemaining - poseEndWarningTimeInSec || currentPoseDuration - poseEndWarningTimeInSec);
+                if (!currentPose.data().switchside) {
+                    currentPose.addClass("almost-done");
+                }
+            }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
         }
     };
 
@@ -52,7 +63,7 @@ $(document).ready(() => {
         poseStartTime = new Date();
         isPaused = false;
 
-        nextPose();
+        setPose();
         setTimer(totalTimeLeft || totalDuration);
     });
 
@@ -71,9 +82,9 @@ $(document).ready(() => {
         poseTimeRemaining = currentPoseDuration - (timeOfPause - poseStartTime);
     });
 
-    // ====================  END OF POSE INDICATOR  ==================== //
-
     // ====================  GLOBAL TIMER ==================== //
+
+    // Set initial timer figure.
 
     const setTimer = (duration) => {
         let timer = duration,
@@ -104,45 +115,56 @@ $(document).ready(() => {
 });
 
 // ==================== HARD-CODED SEQUENCE ==================== //
+
+const minutesToMilliseconds = 1;
+
 const sequence = [
     {
-        name: "5 mins Classical sun salutations",
-        duration: 5,
-        switch: false,
+        name: "Classical Sun Salutations (Surya Namaskar)",
+        poseNumber: 1,
+        duration: 6 * minutesToMilliseconds,
+        switchSide: false,
     },
     {
-        name: "Knee up",
-        duration: 1,
-        switch: true,
+        name: "Standing With Inhale Knee up to Hip-Height",
+        poseNumber: 2,
+        duration: 0.5 * minutesToMilliseconds,
+        switchSide: true,
     },
     {
-        name: "Resolve w palms together",
-        duration: 3,
-        switch: true,
+        name: "Palms Together (Anjali Mudra), Exhale Twist",
+        poseNumber: 3,
+        duration: 0.5 * minutesToMilliseconds,
+        switchSide: true,
     },
     {
-        name: "Hands to sides/back",
-        duration: 1,
-        switch: false,
+        name: "Inhale Open Chest and Exhale Hand to the Knee, and Look over the hand",
+        poseNumber: 4,
+        duration: 0.5 * minutesToMilliseconds,
+        switchSide: false,
     },
     {
-        name: "Triangle",
-        duration: 2,
-        switch: true,
+        name: "Triangle (Trikonasana)",
+        poseNumber: 5,
+        duration: 0.75 * minutesToMilliseconds,
+        switchSide: true,
     },
     {
-        name: "Resolved triangle",
-        duration: 1,
-        switch: true,
+        name: "Revolved Triangle (Parivrtta Trikonasana)",
+        poseNumber: 6,
+        duration: 0.75 * minutesToMilliseconds,
+        switchSide: true,
     },
     {
         name: "Tadasana -> W1 -> humble -> heel-up -> prep for W3",
-        duration: 1,
-        switch: true,
+        poseNumber: 7,
+        duration: 0.5 * minutesToMilliseconds,
+        switchSide: true,
     },
     {
         name: "Tadasana -> W1 -> heel-up -> W3",
-        duration: 1,
-        switch: true,
+        poseNumber: 8,
+        duration: 1 * minutesToMilliseconds,
+        switchSide: true,
     },
 ];
