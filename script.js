@@ -122,55 +122,53 @@ $(document).ready(() => {
 
 // ==================== HARD-CODED SEQUENCE ==================== //
 
-const minutesToMilliseconds = 1;
-
 const sequence = [
     {
         name: "Classical Sun Salutations (Surya Namaskar)",
         poseNumber: 1,
-        duration: 6 * minutesToMilliseconds,
+        duration: 6,
         switchSide: false,
     },
     {
         name: "Standing With Inhale Knee up to Hip-Height",
         poseNumber: 2,
-        duration: 0.5 * minutesToMilliseconds,
+        duration: 0.5,
         switchSide: true,
     },
     {
         name: "Palms Together (Anjali Mudra), Exhale Twist",
         poseNumber: 3,
-        duration: 0.5 * minutesToMilliseconds,
+        duration: 0.5,
         switchSide: true,
     },
     {
         name: "Inhale Open Chest and Exhale Hand to the Knee, and Look over the hand",
         poseNumber: 4,
-        duration: 0.5 * minutesToMilliseconds,
+        duration: 0.5,
         switchSide: false,
     },
     {
         name: "Triangle (Trikonasana)",
         poseNumber: 5,
-        duration: 0.75 * minutesToMilliseconds,
+        duration: 0.75,
         switchSide: true,
     },
     {
         name: "Revolved Triangle (Parivrtta Trikonasana)",
         poseNumber: 6,
-        duration: 0.75 * minutesToMilliseconds,
+        duration: 0.75,
         switchSide: true,
     },
     {
         name: "Tadasana -> W1 -> humble -> heel-up -> prep for W3",
         poseNumber: 7,
-        duration: 0.5 * minutesToMilliseconds,
+        duration: 0.5,
         switchSide: true,
     },
     {
         name: "Tadasana -> W1 -> heel-up -> W3",
         poseNumber: 8,
-        duration: 1 * minutesToMilliseconds,
+        duration: 1,
         switchSide: true,
     },
 ];
