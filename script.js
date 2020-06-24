@@ -14,7 +14,7 @@ $(document).ready(() => {
               <h2>${info.name}</h2>
               <img src="./assets/yoga-stick.png" width=120 />
               <h3>Duration: ${info.duration} min</h3>
-              <h5>switchside? ${info.switchSide}</h5>
+              <h5>Left and Right? ${info.switchSide}</h5>
           </div>`;
     });
 
@@ -43,6 +43,7 @@ $(document).ready(() => {
                     setPose();
                 } else {
                     currentPose.addClass("done").removeClass("almost-done");
+                    playNextPoseAudio();
                     poseIndex++;
                     setPose();
                 }
@@ -111,6 +112,11 @@ $(document).ready(() => {
             clearInterval(yogaTimer);
             isPaused = true;
         }
+    };
+
+    // =======================  SOUNDS  ======================= //
+    const playNextPoseAudio = () => {
+        document.querySelector("#next-pose-audio").play();
     };
 });
 
