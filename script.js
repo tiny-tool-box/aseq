@@ -1,8 +1,9 @@
 $(document).ready(() => {
     let poseStartTime, totalTimeLeft, timeOfPause, poseTimeRemaining, poseTimeoutId, currentPose, currentPoseDuration;
     let totalDuration = 0;
+    let poseIndex = 0;
     let isPaused = true;
-    const poseEndWarningTime = 5000;
+    const poseEndWarningTime = 1000;
 
     // Calculate total duration of given yoga sequence in minutes.
     sequence.map((pose) => (totalDuration += pose.duration * 60));
@@ -22,7 +23,6 @@ $(document).ready(() => {
 
     // Cycle through all poses on timer.
     const $poses = $(".pose-card");
-    let poseIndex = 0;
 
     const setPose = () => {
         // If not paused and poses remaining, play next pose.
@@ -39,8 +39,8 @@ $(document).ready(() => {
                 if (currentPose.data().switchside) {
                     // Set "switchside" data attribute to false after first switch.
                     currentPose.data().switchside = false;
-                    currentPose.addClass("switch-side active-pose").removeClass("almost-done");
                     setPose();
+                    currentPose.addClass("switch-side active-pose").removeClass("almost-done");
                 } else {
                     currentPose.addClass("done").removeClass("almost-done");
                     playNextPoseAudio();
@@ -58,7 +58,7 @@ $(document).ready(() => {
 
     // Start routine and timer on click, or pause if already started.
     $("#play-btn").click(() => {
-        $("button").removeClass("active-button");
+        $("#pause-btn").removeClass("active-button");
         $("#play-btn").addClass("active-button");
 
         poseStartTime = new Date();
@@ -69,28 +69,27 @@ $(document).ready(() => {
     });
 
     $("#pause-btn").click(() => {
-        $("button").removeClass("active-button");
+        $("#play-btn").removeClass("active-button");
         $("#pause-btn").addClass("active-button");
 
-        isPaused = true;
-
         timeOfPause = new Date();
+        isPaused = true;
 
         clearTimeout(poseTimeoutId);
         clearTimeout(poseEndWarningTimeoutId);
         clearInterval(yogaTimer);
 
+        // If paused during sequence, then create new variable that takes time pause into account.
         poseTimeRemaining = currentPoseDuration - (timeOfPause - poseStartTime);
     });
 
     // ====================  GLOBAL TIMER ==================== //
 
-    // Set initial timer figure.
-
     const setTimer = (duration) => {
         let timer = duration,
             minutes,
             seconds;
+        console.log("timer :>> ", timer);
         if (!isPaused) {
             yogaTimer = setInterval(() => {
                 minutes = parseInt(timer / 60);
@@ -115,6 +114,7 @@ $(document).ready(() => {
     };
 
     // =======================  SOUNDS  ======================= //
+
     const playNextPoseAudio = () => {
         document.querySelector("#next-pose-audio").play();
     };
@@ -125,49 +125,49 @@ $(document).ready(() => {
 const sequence = [
     {
         name: "Classical Sun Salutations (Surya Namaskar)",
-        poseNumber: 1,
+        index: 1,
         duration: 6,
         switchSide: false,
     },
     {
         name: "Standing With Inhale Knee up to Hip-Height",
-        poseNumber: 2,
+        index: 2,
         duration: 0.5,
         switchSide: true,
     },
     {
         name: "Palms Together (Anjali Mudra), Exhale Twist",
-        poseNumber: 3,
+        index: 3,
         duration: 0.5,
         switchSide: true,
     },
     {
         name: "Inhale Open Chest and Exhale Hand to the Knee, and Look over the hand",
-        poseNumber: 4,
+        index: 4,
         duration: 0.5,
         switchSide: false,
     },
     {
         name: "Triangle (Trikonasana)",
-        poseNumber: 5,
+        index: 5,
         duration: 0.75,
         switchSide: true,
     },
     {
         name: "Revolved Triangle (Parivrtta Trikonasana)",
-        poseNumber: 6,
+        index: 6,
         duration: 0.75,
         switchSide: true,
     },
     {
         name: "Tadasana -> W1 -> humble -> heel-up -> prep for W3",
-        poseNumber: 7,
+        index: 7,
         duration: 0.5,
         switchSide: true,
     },
     {
         name: "Tadasana -> W1 -> heel-up -> W3",
-        poseNumber: 8,
+        index: 8,
         duration: 1,
         switchSide: true,
     },
