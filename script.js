@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    let poseStartTime, totalTimeLeft, timeOfPause, poseTimeRemaining, poseTimeoutId, currentPose, currentPoseDuration;
+    let poseStartTime, timeOfPause, poseTimeRemaining, poseTimeoutId, currentPose, currentPoseDuration;
     let totalDuration = 0;
     let poseIndex = 0;
     let isPaused = true;
@@ -32,7 +32,7 @@ $(document).ready(() => {
             currentPose = $poses.eq(poseIndex);
             currentPose.addClass("active-pose");
 
-            currentPoseDuration = currentPose.data().duration * 5000;
+            currentPoseDuration = currentPose.data().duration * 2000;
             poseStartTime = new Date();
 
             poseTimeoutId = setTimeout(() => {
@@ -57,33 +57,29 @@ $(document).ready(() => {
     };
 
     // Start routine and timer on click, or pause if already started.
-    $("#play-btn").click(() => {
-        $("#pause-btn").removeClass("active-button");
-        $("#play-btn").addClass("active-button");
+    $("button").click(() => {
+        $("#timer").stopwatch().stopwatch("toggle");
 
-        poseStartTime = new Date();
-        isPaused = false;
+        if (isPaused) {
+            $("button").addClass("active-button").text("PAUSE");
 
-        setPose();
-        // setTimer(totalTimeLeft || totalDuration);
+            poseStartTime = new Date();
+            isPaused = false;
+
+            setPose();
+        } else {
+            $("button").removeClass("active-button").text("PLAY");
+
+            timeOfPause = new Date();
+            isPaused = true;
+
+            clearTimeout(poseTimeoutId);
+            clearTimeout(poseEndWarningTimeoutId);
+
+            // If paused during sequence, then create new variable that takes time pause into account.
+            poseTimeRemaining = currentPoseDuration - (timeOfPause - poseStartTime);
+        }
     });
-
-    $("#pause-btn").click(() => {
-        $("#play-btn").removeClass("active-button");
-        $("#pause-btn").addClass("active-button");
-
-        timeOfPause = new Date();
-        isPaused = true;
-
-        clearTimeout(poseTimeoutId);
-        clearTimeout(poseEndWarningTimeoutId);
-        clearInterval(yogaTimer);
-
-        // If paused during sequence, then create new variable that takes time pause into account.
-        poseTimeRemaining = currentPoseDuration - (timeOfPause - poseStartTime);
-    });
-
-    // ====================  GLOBAL STOPWATCH ==================== //
 
     // =======================  SOUNDS  ======================= //
 
@@ -93,7 +89,7 @@ $(document).ready(() => {
 });
 
 // ==================== HARD-CODED SEQUENCE ==================== //
-// specifies which pose or poses and the duration
+// Specifies which pose or poses and the duration
 
 const sequence = [
     {
