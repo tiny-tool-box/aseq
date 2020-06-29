@@ -65,7 +65,7 @@ $(document).ready(() => {
         isPaused = false;
 
         setPose();
-        setTimer(totalTimeLeft || totalDuration);
+        // setTimer(totalTimeLeft || totalDuration);
     });
 
     $("#pause-btn").click(() => {
@@ -83,35 +83,7 @@ $(document).ready(() => {
         poseTimeRemaining = currentPoseDuration - (timeOfPause - poseStartTime);
     });
 
-    // ====================  GLOBAL TIMER ==================== //
-
-    const setTimer = (duration) => {
-        let timer = duration,
-            minutes,
-            seconds;
-        console.log("timer :>> ", timer);
-        if (!isPaused) {
-            yogaTimer = setInterval(() => {
-                minutes = parseInt(timer / 60);
-                seconds = parseInt(timer % 60);
-
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                $("#timer").text(`${minutes}:${seconds}`);
-
-                totalTimeLeft = duration--;
-
-                // When timer reaches 0, clear interval.
-                if (--timer < 0) {
-                    clearInterval(yogaTimer);
-                }
-            }, 1000);
-        } else {
-            clearInterval(yogaTimer);
-            isPaused = true;
-        }
-    };
+    // ====================  GLOBAL STOPWATCH ==================== //
 
     // =======================  SOUNDS  ======================= //
 
@@ -121,54 +93,56 @@ $(document).ready(() => {
 });
 
 // ==================== HARD-CODED SEQUENCE ==================== //
+// specifies which pose or poses and the duration
 
 const sequence = [
     {
         name: "Classical Sun Salutations (Surya Namaskar)",
-        index: 1,
         duration: 6,
         switchSide: false,
     },
     {
         name: "Standing With Inhale Knee up to Hip-Height",
-        index: 2,
         duration: 0.5,
         switchSide: true,
     },
     {
         name: "Palms Together (Anjali Mudra), Exhale Twist",
-        index: 3,
         duration: 0.5,
         switchSide: true,
     },
     {
         name: "Inhale Open Chest and Exhale Hand to the Knee, and Look over the hand",
-        index: 4,
         duration: 0.5,
         switchSide: false,
     },
     {
         name: "Triangle (Trikonasana)",
-        index: 5,
         duration: 0.75,
         switchSide: true,
     },
     {
         name: "Revolved Triangle (Parivrtta Trikonasana)",
-        index: 6,
         duration: 0.75,
         switchSide: true,
     },
     {
         name: "Tadasana -> W1 -> humble -> heel-up -> prep for W3",
-        index: 7,
         duration: 0.5,
         switchSide: true,
     },
     {
         name: "Tadasana -> W1 -> heel-up -> W3",
-        index: 8,
         duration: 1,
         switchSide: true,
     },
 ];
+
+// const poses = [
+//     {
+//         title: "asdf",
+//         descritpion: "asdf ",
+//         switchSide: "",
+//         imageReferences: "ASdfasd",
+//     },
+// ];

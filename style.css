@@ -52,6 +52,8 @@ button {
 
 .done {
     background-color: gray;
+    border: gray 2px solid;
+    opacity: 0.2;
 }
 
 @keyframes flip-card {
