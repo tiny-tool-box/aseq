@@ -11,11 +11,13 @@ $(document).ready(() => {
     // ====================== GENERATE YOGA CARDS ======================= //
     let output = "";
     $.each(sequence, (i, info) => {
-        output += `<div class="pose-card" data-switchside=${info.switchSide} data-duration=${info.duration}>
-              <h2>${info.name}</h2>
+        const { switchSide, name, description, imageRef } = info.pose;
+        output += `<div class="pose-card" data-switchside=${switchSide} data-duration=${info.duration}>
+              <h4>${name}</h4>
               <img src="./assets/yoga-stick.png" width=120 />
-              <h3>Duration: ${info.duration} min</h3>
-              <h5>Left and Right? ${info.switchSide}</h5>
+              <h4>Duration: ${info.duration} min</h4>
+              <h3>${description}</h3>
+              <h6>Left and Right? ${switchSide}</h6>
           </div>`;
     });
 
@@ -23,6 +25,12 @@ $(document).ready(() => {
 
     // Cycle through all poses on timer.
     const $poses = $(".pose-card");
+    $poses.on("mouseenter", (e) => {
+        console.log(e.target.data);
+    });
+    $poses.on("mouseleave", (e) => {
+        console.log("mouseleave");
+    });
 
     const setPose = () => {
         // If not paused and poses remaining, play next pose.
@@ -48,6 +56,7 @@ $(document).ready(() => {
                     setPose();
                 }
             }, poseTimeRemaining || currentPoseDuration);
+
             poseEndWarningTimeoutId = setTimeout(() => {
                 if (!currentPose.data().switchside) {
                     currentPose.addClass("almost-done");
@@ -57,18 +66,18 @@ $(document).ready(() => {
     };
 
     // Start routine and timer on click, or pause if already started.
-    $("button").click(() => {
+    $("#pause-play-btn").click(() => {
         $("#timer").stopwatch().stopwatch("toggle");
 
         if (isPaused) {
-            $("button").addClass("active-button").text("PAUSE");
+            $("#pause-play-btn").text("PAUSE");
 
             poseStartTime = new Date();
             isPaused = false;
 
             setPose();
         } else {
-            $("button").removeClass("active-button").text("PLAY");
+            $("#pause-play-btn").text("PLAY");
 
             timeOfPause = new Date();
             isPaused = true;
@@ -81,6 +90,18 @@ $(document).ready(() => {
         }
     });
 
+    $("#reset-btn").click(() => {
+        $("#timer").stopwatch().stopwatch("reset");
+        $poses.removeClass("done almost-done switch-side active-pose");
+        poseIndex = 0;
+        isPaused = true;
+        timeOfPause = null;
+        poseStartTime = null;
+        poseTimeRemaining = null;
+        clearTimeout(poseTimeoutId);
+        clearTimeout(poseEndWarningTimeoutId);
+    });
+
     // =======================  SOUNDS  ======================= //
 
     const playNextPoseAudio = () => {
@@ -89,56 +110,89 @@ $(document).ready(() => {
 });
 
 // ==================== HARD-CODED SEQUENCE ==================== //
-// Specifies which pose or poses and the duration
 
-const sequence = [
+const poses = [
     {
         name: "Classical Sun Salutations (Surya Namaskar)",
-        duration: 6,
         switchSide: false,
+        description: "test 1 2 3 ",
+        imageRef: null,
     },
     {
         name: "Standing With Inhale Knee up to Hip-Height",
-        duration: 0.5,
         switchSide: true,
+        description: null,
+        imageRef: null,
     },
     {
         name: "Palms Together (Anjali Mudra), Exhale Twist",
-        duration: 0.5,
         switchSide: true,
+        description: null,
+        imageRef: null,
     },
     {
         name: "Inhale Open Chest and Exhale Hand to the Knee, and Look over the hand",
-        duration: 0.5,
         switchSide: false,
+        description: null,
+        imageRef: null,
     },
     {
         name: "Triangle (Trikonasana)",
-        duration: 0.75,
         switchSide: true,
+        description: null,
+        imageRef: null,
     },
     {
         name: "Revolved Triangle (Parivrtta Trikonasana)",
-        duration: 0.75,
         switchSide: true,
+        description: null,
+        imageRef: null,
     },
     {
         name: "Tadasana -> W1 -> humble -> heel-up -> prep for W3",
-        duration: 0.5,
         switchSide: true,
+        description: null,
+        imageRef: null,
     },
     {
         name: "Tadasana -> W1 -> heel-up -> W3",
-        duration: 1,
         switchSide: true,
+        description: null,
+        imageRef: null,
     },
 ];
 
-// const poses = [
-//     {
-//         title: "asdf",
-//         descritpion: "asdf ",
-//         switchSide: "",
-//         imageReferences: "ASdfasd",
-//     },
-// ];
+const sequence = [
+    {
+        pose: poses[0],
+        duration: 2,
+    },
+    {
+        pose: poses[1],
+        duration: 3,
+    },
+    {
+        pose: poses[2],
+        duration: 1,
+    },
+    {
+        pose: poses[3],
+        duration: 4,
+    },
+    {
+        pose: poses[4],
+        duration: 2,
+    },
+    {
+        pose: poses[5],
+        duration: 4,
+    },
+    {
+        pose: poses[6],
+        duration: 2,
+    },
+    {
+        pose: poses[7],
+        duration: 1,
+    },
+];

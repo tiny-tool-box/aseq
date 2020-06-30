@@ -35,6 +35,7 @@ button {
 .active-pose {
     border: orange 2px solid;
     background-color: yellow;
+    transform: scale(1.07);
 }
 
 .active-button {
