@@ -35,10 +35,10 @@ $(document).ready(() => {
     const setPose = () => {
         // If not paused and poses remaining, play next pose.
         if (!isPaused && poseIndex < $poses.length) {
-            $poses.removeClass("active-pose");
+            $poses.removeClass("active-pose-first active-pose-second");
 
             currentPose = $poses.eq(poseIndex);
-            currentPose.addClass("active-pose");
+            currentPose.addClass("active-pose-first");
 
             currentPoseDuration = currentPose.data().duration * 2000;
             poseStartTime = new Date();
@@ -48,7 +48,7 @@ $(document).ready(() => {
                     // Set "switchside" data attribute to false after first switch.
                     currentPose.data().switchside = false;
                     setPose();
-                    currentPose.addClass("switch-side active-pose").removeClass("almost-done");
+                    currentPose.addClass("switch-side active-pose-second").removeClass("almost-done");
                 } else {
                     currentPose.addClass("done").removeClass("almost-done");
                     playNextPoseAudio();
@@ -90,17 +90,17 @@ $(document).ready(() => {
         }
     });
 
-    $("#reset-btn").click(() => {
-        $("#timer").stopwatch().stopwatch("reset");
-        $poses.removeClass("done almost-done switch-side active-pose");
-        poseIndex = 0;
-        isPaused = true;
-        timeOfPause = null;
-        poseStartTime = null;
-        poseTimeRemaining = null;
-        clearTimeout(poseTimeoutId);
-        clearTimeout(poseEndWarningTimeoutId);
-    });
+    // $("#reset-btn").click(() => {
+    //     $("#timer").stopwatch().stopwatch("reset");
+    //     $poses.removeClass("done almost-done switch-side active-pose");
+    //     poseIndex = 0;
+    //     isPaused = true;
+    //     timeOfPause = null;
+    //     poseStartTime = null;
+    //     poseTimeRemaining = null;
+    //     clearTimeout(poseTimeoutId);
+    //     clearTimeout(poseEndWarningTimeoutId);
+    // });
 
     // =======================  SOUNDS  ======================= //
 

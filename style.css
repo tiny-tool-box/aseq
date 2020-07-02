@@ -32,9 +32,15 @@ button {
     border: royalblue 2px solid;
 }
 
-.active-pose {
-    border: orange 2px solid;
+.active-pose-first {
+    border: yellow 2px solid;
     background-color: yellow;
+    transform: scale(1.07);
+}
+
+.active-pose-second {
+    border: greenyellow 2px solid;
+    background-color: greenyellow;
     transform: scale(1.07);
 }
 
@@ -43,7 +49,7 @@ button {
 }
 
 .almost-done {
-    background-color: red;
+    border: red 2px solid;
 }
 
 .switch-side {
