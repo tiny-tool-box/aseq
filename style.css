@@ -63,6 +63,13 @@ button {
     opacity: 0.2;
 }
 
+.pose-card > .description {
+    display: none;
+}
+.pose-card:hover > .description {
+    display: block;
+}
+
 @keyframes flip-card {
     0% {
         transform: rotateY(0deg);
