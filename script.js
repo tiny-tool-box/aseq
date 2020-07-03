@@ -37,7 +37,9 @@ $(document).ready(() => {
             $poses.removeClass("active-pose-first active-pose-second");
 
             currentPose = $poses.eq(poseIndex);
+
             currentPose.addClass("active-pose-first");
+            currentPose.find(".description").css({ display: "block" });
 
             currentPoseDuration = currentPose.data().duration * 2000;
             poseStartTime = new Date();
