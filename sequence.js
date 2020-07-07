@@ -53,36 +53,48 @@ const poses = [
 ];
 
 const sequence = [
-    {
-        pose: poses[0],
-        duration: 2,
-    },
-    {
-        pose: poses[1],
-        duration: 3,
-    },
-    {
-        pose: poses[2],
-        duration: 1,
-    },
-    {
-        pose: poses[3],
-        duration: 4,
-    },
-    {
-        pose: poses[4],
-        duration: 2,
-    },
-    {
-        pose: poses[5],
-        duration: 4,
-    },
-    {
-        pose: poses[6],
-        duration: 2,
-    },
-    {
-        pose: poses[7],
-        duration: 1,
-    },
+    [
+        {
+            pose: poses[0],
+            duration: 2,
+        },
+    ],
+    [
+        {
+            pose: poses[1],
+            duration: 3,
+        },
+        {
+            pose: poses[2],
+            duration: 1,
+        },
+        {
+            pose: poses[3],
+            duration: 4,
+        },
+    ],
+    [
+        {
+            pose: poses[4],
+            duration: 2,
+        },
+    ],
+    [
+        {
+            pose: poses[5],
+            duration: 4,
+        },
+    ],
+    [
+        {
+            pose: poses[6],
+            duration: 2,
+        },
+    ],
+    [
+        {
+            pose: poses[7],
+            duration: 1,
+        },
+    ],
 ];

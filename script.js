@@ -10,20 +10,24 @@ $(document).ready(() => {
     let isPaused = true;
     const poseEndWarningTime = 1000;
 
-    // Calculate total duration of given yoga sequence in minutes.
+    // Calculate total duration of given yoga sequence in seconds.
     sequence.map((pose) => (totalDuration += pose.duration * 60));
 
     // ====================== GENERATE YOGA CARDS ======================= //
     let output = "";
     $.each(sequence, (i, info) => {
-        const { switchSide, name, description, imageRef } = info.pose;
-        output += `<div class="pose-card" data-switchside=${switchSide} data-duration=${info.duration}>
-              <h4>${name}</h4>
-              <img src="./assets/yoga-stick.png" width=120 />
-              <h4>Duration: ${info.duration} min</h4>
-              <h3 class="description hide">${description}</h3>
-              <h6>Left and Right? ${switchSide}</h6>
-          </div>`;
+        info.forEach((item) => {
+            let { switchSide, name, description, imageRef } = item.pose;
+            output += `<div class="pose-card" data-switchside=${switchSide} data-duration=${
+                item.duration
+            }>
+                  <h4>${name}</h4>
+                  <img src=${imageRef || "./assets/yoga-stick.png"} width=120 />
+                  <h4>Duration: ${item.duration} min</h4>
+                  <h3 class="description hide">${description}</h3>
+                  <h6>Left and Right? ${switchSide}</h6>
+              </div>`;
+        });
     });
 
     $("#pose-container").html(output);
@@ -37,11 +41,11 @@ $(document).ready(() => {
             $poses.removeClass("active-pose-first active-pose-second");
 
             currentPose = $poses.eq(poseIndex);
+            console.log("poseIndex :>> ", poseIndex);
 
             currentPose.addClass("active-pose-first");
-            currentPose.find(".description").css({ display: "block" });
 
-            currentPoseDuration = currentPose.data().duration * 2000;
+            currentPoseDuration = currentPose.data().duration * 1000;
             poseStartTime = new Date();
 
             poseTimeoutId = setTimeout(() => {
@@ -94,23 +98,8 @@ $(document).ready(() => {
         }
     });
 
-    // $("#reset-btn").click(() => {
-    //     $("#timer").stopwatch().stopwatch("reset");
-    //     $poses.removeClass("done almost-done switch-side active-pose");
-    //     poseIndex = 0;
-    //     isPaused = true;
-    //     timeOfPause = null;
-    //     poseStartTime = null;
-    //     poseTimeRemaining = null;
-    //     clearTimeout(poseTimeoutId);
-    //     clearTimeout(poseEndWarningTimeoutId);
-    // });
-
-    $(".pose-card").click((e) => {
-        $(this).find(".description").css({ display: "block" });
-        $(this).addClass("CLICKED");
-
-        $(this).find(".description").toggleClass("hide show");
+    $("#reset-btn").click(() => {
+        location.reload();
     });
 
     // =======================  SOUNDS  ======================= //
