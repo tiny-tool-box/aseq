@@ -41,7 +41,6 @@ $(document).ready(() => {
             $poses.removeClass("active-pose-first active-pose-second");
 
             currentPose = $poses.eq(poseIndex);
-            console.log("poseIndex :>> ", poseIndex);
 
             currentPose.addClass("active-pose-first");
 
