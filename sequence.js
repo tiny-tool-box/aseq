@@ -4,7 +4,7 @@ const poses = [
     {
         name: "Classical Sun Salutations (Surya Namaskar)",
         switchSide: false,
-        description: "test 1 2 3 ",
+        description: "",
         imageRef: null,
     },
     {

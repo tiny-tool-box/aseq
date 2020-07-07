@@ -21,11 +21,12 @@ $(document).ready(() => {
             output += `<div class="pose-card" data-switchside=${switchSide} data-duration=${
                 item.duration
             }>
-                  <h4>${name}</h4>
+                  <h5>${name}</h5>
                   <img src=${imageRef || "./assets/yoga-stick.png"} width=120 />
-                  <h4>Duration: ${item.duration} min</h4>
-                  <h3 class="description hide">${description}</h3>
-                  <h6>Left and Right? ${switchSide}</h6>
+                  <h6>Duration: ${item.duration} min</h6>
+                  <h5 class="description">${
+                      description || "No description"
+                  }</h5>
               </div>`;
         });
     });
