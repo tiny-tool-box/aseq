@@ -15,19 +15,17 @@ $(document).ready(() => {
 
     // ====================== GENERATE YOGA CARDS ======================= //
     let output = "";
-    let index = 0;
     $.each(sequence, (i, info) => {
         info.forEach((item) => {
             let { switchSide, name, description, imageRef } = item.pose;
             output += `<div class="pose-card" data-switchside=${switchSide} data-duration=${
                 item.duration
-            } data-index=${index}>
+            } >
                   <h3>${name}</h3>
                   <img src=${imageRef || "./assets/yoga-stick.png"} width=250 />
                   <h6>Duration: ${item.duration} min</h6>
                   <p class="description">${description || "No description"}</p>
               </div>`;
-            index++;
         });
     });
 
@@ -45,11 +43,11 @@ $(document).ready(() => {
 
             currentPose.addClass("active-pose-first");
 
-            currentPoseDuration = currentPose.data().duration * 1000;
+            currentPoseDuration = currentPose.data("duration") * 1000;
             poseStartTime = new Date();
 
             poseTimeoutId = setTimeout(() => {
-                if (currentPose.data().switchside) {
+                if (currentPose.data("switchside")) {
                     // Set "switchside" data attribute to false after first switch.
                     currentPose.data().switchside = false;
                     setPose();
@@ -65,7 +63,7 @@ $(document).ready(() => {
             }, poseTimeRemaining || currentPoseDuration);
 
             poseEndWarningTimeoutId = setTimeout(() => {
-                if (!currentPose.data().switchside) {
+                if (!currentPose.data("switchside")) {
                     currentPose.addClass("almost-done");
                 }
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
@@ -74,8 +72,17 @@ $(document).ready(() => {
 
     // Set pose to target card on click
 
-    $(".pose-card").click(() => {
-        console.log("$(this).data() :>> ", $(this).data());
+    $(".pose-card").click(function () {
+        clickedPoseIndex = $(".pose-card").index(this);
+        let prevPoses = $(".pose-card").filter(function () {
+            return parseInt($(".pose-card").index(this) < clickedPoseIndex);
+        });
+
+        console.log("prevPoses :>> ", prevPoses);
+
+        isPaused = false;
+        poseIndex = clickedPoseIndex;
+        setPose();
     });
 
     // Start routine and timer on click, or pause if already started.

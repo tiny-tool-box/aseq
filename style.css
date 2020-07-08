@@ -40,11 +40,13 @@ button {
     flex-direction: column;
     align-items: center;
     border: #92b4a7 2px solid;
+    filter: drop-shadow(0 0 0.15rem black);
 }
 
 .pose-card > * {
     border: #92b4a7 2px solid;
     background-color: #92b4a7;
+    max-width: 100%;
 }
 
 .active-pose-first {
@@ -69,10 +71,6 @@ button {
     background-color: #02deb2;
 }
 
-.active-button {
-    background-color: lightblue;
-}
-
 .almost-done {
     border: #fe5f55 2px solid;
 }
@@ -95,10 +93,6 @@ button {
 .pose-card:hover > .description {
     display: block;
     font-size: 11px;
-}
-
-img {
-    max-width: 100%;
 }
 
 @keyframes flip-card {

@@ -20,8 +20,7 @@ const poses = [
         imageRef: "./assets/aseq_kneeupwarmup1_2.png",
     },
     {
-        name:
-            "Inhale Open Chest and Exhale Hand to the Knee, and Look over the hand",
+        name: "Inhale Open Chest, Hand to the Knee, and Look Over Shoulder",
         switchSide: false,
         description:
             "Step back with the (L/R) foot perpendicular to the front of the mat. The R/L foot points to the front of the mat. The hips face the long edge of the mat. With hands on the shoulders, or out to sides, hinge to the (R/L) and then, drop the R/L hand down. The L/R arm can reach for the ceiling, or be tucked behind your back, to help keep the chest open",
