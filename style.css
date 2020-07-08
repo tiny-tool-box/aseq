@@ -1,47 +1,72 @@
+* {
+    background-color: slategrey;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
 header {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
+    margin-top: 20px;
 }
 
 button {
-    background-color: white;
     cursor: pointer;
     width: 100px;
+    height: 30px;
     text-transform: uppercase;
+    background-color: #92b4a7;
 }
 #timer {
     font-size: xx-large;
-    color: royalblue;
+    color: white;
 }
 
 #pose-container {
     display: flex;
     flex-wrap: wrap;
     box-sizing: border-box;
+    justify-content: center;
 }
 .pose-card {
-    border: white 2px solid;
     width: 20%;
-    margin: 10px;
+    margin: 20px;
     padding: 10px;
-    background-color: lightblue;
+    background-color: #92b4a7;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: royalblue 2px solid;
+    border: #92b4a7 2px solid;
+}
+
+.pose-card > * {
+    border: #92b4a7 2px solid;
+    background-color: #92b4a7;
 }
 
 .active-pose-first {
-    border: yellow 2px solid;
-    background-color: yellow;
+    border: #ffd23f 2px solid;
+    background-color: #ffd23f;
     transform: scale(1.07);
 }
 
+.active-pose-first > * {
+    border: #ffd23f 2px solid;
+    background-color: #ffd23f;
+}
+
 .active-pose-second {
-    border: greenyellow 2px solid;
-    background-color: greenyellow;
+    border: #02deb2 2px solid;
+    background-color: #02deb2;
     transform: scale(1.07);
+}
+
+.active-pose-second > * {
+    border: #02deb2 2px solid;
+    background-color: #02deb2;
 }
 
 .active-button {
@@ -49,18 +74,19 @@ button {
 }
 
 .almost-done {
-    border: red 2px solid;
+    border: #fe5f55 2px solid;
 }
 
 .switch-side {
-    animation-duration: 2s;
+    animation-duration: 1s;
     animation-name: flip-card;
 }
 
-.done {
-    background-color: gray;
-    border: gray 2px solid;
-    opacity: 0.2;
+.done,
+.done > * {
+    background-color: #575c75;
+    border: #575c75 2px solid;
+    opacity: 0.4;
 }
 
 .pose-card > .description {
@@ -68,6 +94,11 @@ button {
 }
 .pose-card:hover > .description {
     display: block;
+    font-size: 11px;
+}
+
+img {
+    max-width: 100%;
 }
 
 @keyframes flip-card {

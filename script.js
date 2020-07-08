@@ -15,19 +15,19 @@ $(document).ready(() => {
 
     // ====================== GENERATE YOGA CARDS ======================= //
     let output = "";
+    let index = 0;
     $.each(sequence, (i, info) => {
         info.forEach((item) => {
             let { switchSide, name, description, imageRef } = item.pose;
             output += `<div class="pose-card" data-switchside=${switchSide} data-duration=${
                 item.duration
-            }>
-                  <h5>${name}</h5>
-                  <img src=${imageRef || "./assets/yoga-stick.png"} width=120 />
+            } data-index=${index}>
+                  <h3>${name}</h3>
+                  <img src=${imageRef || "./assets/yoga-stick.png"} width=250 />
                   <h6>Duration: ${item.duration} min</h6>
-                  <h5 class="description">${
-                      description || "No description"
-                  }</h5>
+                  <p class="description">${description || "No description"}</p>
               </div>`;
+            index++;
         });
     });
 
@@ -71,6 +71,12 @@ $(document).ready(() => {
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
         }
     };
+
+    // Set pose to target card on click
+
+    $(".pose-card").click(() => {
+        console.log("$(this).data() :>> ", $(this).data());
+    });
 
     // Start routine and timer on click, or pause if already started.
     $("#pause-play-btn").click(() => {
