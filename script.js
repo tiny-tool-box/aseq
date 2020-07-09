@@ -13,11 +13,22 @@ $(document).ready(() => {
     // Calculate total duration of given yoga sequence in seconds.
     sequence.map((pose) => (totalDuration += pose.duration * 60));
 
-    // ====================== GENERATE YOGA CARDS ======================= //
+    // ====================== GENERATE YOGA CARDS ======================= /
+    let otherSideStart = [];
+    let index = 0;
     let output = "";
     $.each(sequence, (i, info) => {
-        info.forEach((item) => {
+        info.forEach((item, key, arr) => {
+            // If only 1 item in mini-sequence, or last item in mini-sequence, set array value = to its poseIndex
+            if (arr.length == 1 || Object.is(arr.length - 1, key)) {
+                otherSideStart[index] = index;
+            } else if (arr.some((x) => x.pose.switchSide)) {
+                otherSideStart[index] = -1;
+            }
+            index++;
+
             let { switchSide, name, description, imageRef } = item.pose;
+
             output += `<div class="pose-card" data-switchside=${switchSide} data-duration=${
                 item.duration
             } >
