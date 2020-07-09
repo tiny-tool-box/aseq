@@ -14,33 +14,36 @@ $(document).ready(() => {
     sequence.map((pose) => (totalDuration += pose.duration * 60));
 
     // ====================== GENERATE YOGA CARDS ======================= /
-    let otherSideStart = [];
-    let index = 0;
-    let output = "";
-    $.each(sequence, (i, info) => {
-        info.forEach((item, key, arr) => {
-            // If only 1 item in mini-sequence, or last item in mini-sequence, set array value = to its poseIndex
-            if (arr.length == 1 || Object.is(arr.length - 1, key)) {
-                otherSideStart[index] = index;
-            } else if (arr.some((x) => x.pose.otherSide)) {
-                otherSideStart[index] = -1;
-            }
-            index++;
+    const genCards = () => {
+        let otherSideStart = [];
+        let index = 0;
+        let output = "";
+        $.each(sequence, (i, info) => {
+            info.forEach((item, key, arr) => {
+                // If only 1 item in mini-sequence, or last item in mini-sequence, set array value = to its poseIndex
+                if (arr.length == 1 || Object.is(arr.length - 1, key)) {
+                    otherSideStart[index] = index;
+                } else if (arr.some((x) => x.pose.otherSide)) {
+                    otherSideStart[index] = -1;
+                }
+                index++;
 
-            let { otherSide, name, description, imageRef } = item.pose;
+                let { otherSide, name, description, imageRef } = item.pose;
 
-            output += `<div class="pose-card" data-otherside=${otherSide} data-duration=${
-                item.duration
-            } >
+                output += `<div class="pose-card" data-otherside=${otherSide} data-duration=${
+                    item.duration
+                } >
                   <h3>${name}</h3>
                   <img src=${imageRef || "./assets/yoga-stick.png"} width=250 />
                   <h6>Duration: ${item.duration} min</h6>
                   <p class="description">${description || "No description"}</p>
               </div>`;
+            });
         });
-    });
 
-    $("#pose-container").html(output);
+        $("#pose-container").html(output);
+    };
+    genCards();
 
     // Cycle through all poses on timer.
     const $poses = $(".pose-card");
@@ -60,8 +63,10 @@ $(document).ready(() => {
             poseTimeoutId = setTimeout(() => {
                 if (currentPose.data("otherside")) {
                     // if (otherSideStart[poseIndex] < 0) {
-                    // Set "otherSide" data attribute to false after first switch.
-                    currentPose.data().otherside = false;
+                    // Set "otherSide" data attribute to opposite value after first switch.
+                    // this is required for the click to set pose feature to work smoothly
+                    currentPose.data().otherside = !currentPose.data()
+                        .otherside;
                     // poseIndex++;
                     setPose();
                     currentPose
@@ -86,17 +91,38 @@ $(document).ready(() => {
     // Set pose to target card on click
     $(".pose-card").click(function () {
         $("#pause-play-btn").trigger("click");
-        clickedPoseIndex = $(".pose-card").index(this);
-        let prevPoses = $(".pose-card").filter(function () {
-            return $(".pose-card").index(this) < clickedPoseIndex;
-        });
 
-        for (let i = 0; i < prevPoses.length; i++) {
-            $poses.eq(i).addClass("done");
+        clickedPoseIndex = $(".pose-card").index(this);
+
+        // Get number of poses that preceded the clicked card and change appropriate classes
+        let prevPosesLength = $(".pose-card").filter(function () {
+            return $(".pose-card").index(this) < clickedPoseIndex;
+        }).length;
+
+        for (let i = 0; i < prevPosesLength; i++) {
+            $poses.eq(i).removeClass().addClass("done pose-card");
         }
-        clearTimeout(poseEndWarningTimeoutId);
+
+        for (let i = clickedPoseIndex; i < $poses.length; i++) {
+            $poses.eq(i).removeClass().addClass("pose-card");
+        }
+
+        // Refreshing relevant variables and timeouts
+        // clearTimeout(poseEndWarningTimeoutId);
         clearTimeout(poseTimeoutId);
         poseIndex = clickedPoseIndex;
+        poseStartTime = null;
+        timeOfPause = null;
+        poseTimeRemaining = null;
+        currentPoseDuration = null;
+
+        // if pose is already done, reset its otherside value to the original
+        $poses.each(function () {
+            if ($(this).hasClass("done") && isPaused) {
+                $(this).data().otherside = !$(this).data().otherside;
+            }
+        });
+
         setPose();
     });
 
