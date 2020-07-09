@@ -22,14 +22,14 @@ $(document).ready(() => {
             // If only 1 item in mini-sequence, or last item in mini-sequence, set array value = to its poseIndex
             if (arr.length == 1 || Object.is(arr.length - 1, key)) {
                 otherSideStart[index] = index;
-            } else if (arr.some((x) => x.pose.switchSide)) {
+            } else if (arr.some((x) => x.pose.otherSide)) {
                 otherSideStart[index] = -1;
             }
             index++;
 
-            let { switchSide, name, description, imageRef } = item.pose;
+            let { otherSide, name, description, imageRef } = item.pose;
 
-            output += `<div class="pose-card" data-switchside=${switchSide} data-duration=${
+            output += `<div class="pose-card" data-otherside=${otherSide} data-duration=${
                 item.duration
             } >
                   <h3>${name}</h3>
@@ -58,9 +58,11 @@ $(document).ready(() => {
             poseStartTime = new Date();
 
             poseTimeoutId = setTimeout(() => {
-                if (currentPose.data("switchside")) {
-                    // Set "switchside" data attribute to false after first switch.
-                    currentPose.data().switchside = false;
+                if (currentPose.data("otherside")) {
+                    // if (otherSideStart[poseIndex] < 0) {
+                    // Set "otherSide" data attribute to false after first switch.
+                    currentPose.data().otherside = false;
+                    // poseIndex++;
                     setPose();
                     currentPose
                         .addClass("switch-side active-pose-second")
@@ -74,7 +76,7 @@ $(document).ready(() => {
             }, poseTimeRemaining || currentPoseDuration);
 
             poseEndWarningTimeoutId = setTimeout(() => {
-                if (!currentPose.data("switchside")) {
+                if (!currentPose.data("otherside")) {
                     currentPose.addClass("almost-done");
                 }
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
@@ -82,16 +84,18 @@ $(document).ready(() => {
     };
 
     // Set pose to target card on click
-
     $(".pose-card").click(function () {
+        $("#pause-play-btn").trigger("click");
         clickedPoseIndex = $(".pose-card").index(this);
         let prevPoses = $(".pose-card").filter(function () {
-            return parseInt($(".pose-card").index(this) < clickedPoseIndex);
+            return $(".pose-card").index(this) < clickedPoseIndex;
         });
 
-        console.log("prevPoses :>> ", prevPoses);
-
-        isPaused = false;
+        for (let i = 0; i < prevPoses.length; i++) {
+            $poses.eq(i).addClass("done");
+        }
+        clearTimeout(poseEndWarningTimeoutId);
+        clearTimeout(poseTimeoutId);
         poseIndex = clickedPoseIndex;
         setPose();
     });
