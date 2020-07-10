@@ -33,8 +33,8 @@ $(document).ready(() => {
                 output += `<div class="pose-card" data-otherside=${otherSide} data-duration=${
                     item.duration
                 } >
-                  <h3>${name}</h3>
-                  <img src=${imageRef || "./assets/yoga-stick.png"} width=250 />
+                  <div class="pose-card-title">${name}</div>
+                  <img src=${imageRef || "./assets/yoga-stick.png"} />
                   <h6>Duration: ${item.duration} min</h6>
                   <p class="description">${description || "No description"}</p>
               </div>`;

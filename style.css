@@ -6,6 +6,10 @@
     color: white;
 }
 
+.pose-card-title {
+    font-size: large;
+}
+
 header {
     display: flex;
     justify-content: space-evenly;
@@ -25,15 +29,20 @@ button {
     color: white;
 }
 
+img {
+    max-width: 250px;
+}
+
 #pose-container {
     display: flex;
     flex-wrap: wrap;
     box-sizing: border-box;
     justify-content: center;
 }
+
 .pose-card {
     width: 20%;
-    margin: 20px;
+    margin: 10px;
     padding: 10px;
     background-color: #92b4a7;
     display: flex;
@@ -101,5 +110,75 @@ button {
     }
     100% {
         transform: rotateY(360deg);
+    }
+}
+
+@media screen and (max-width: 900px) {
+    h1 {
+        font-size: medium;
+    }
+    button {
+        width: 100px;
+        height: 30px;
+        font-size: 10px;
+    }
+    .pose-card {
+        margin: 10px;
+        width: 40%;
+        height: 22vh;
+    }
+    .pose-card-title {
+        font-size: medium;
+    }
+    img {
+        width: 50%;
+    }
+    .pose-card:hover > .description {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    h1 {
+        font-size: small;
+    }
+    img {
+        width: 50%;
+    }
+    .pose-card {
+        margin: 5px;
+        width: 40%;
+        height: 5%;
+    }
+    .pose-card-title {
+        font-size: smaller;
+    }
+}
+
+@media screen and (max-width: 900px) and (orientation: landscape) {
+    #pose-container {
+        border: 3px green dotted;
+    }
+    h1 {
+        font-size: medium;
+    }
+    button {
+        width: 100px;
+        height: 30px;
+        font-size: 10px;
+    }
+    .pose-card {
+        margin: 10px;
+        width: 20%;
+        height: 37vh;
+    }
+    .pose-card-title {
+        font-size: x-small;
+    }
+    img {
+        width: 40%;
+    }
+    .pose-card:hover > .description {
+        display: none;
     }
 }
