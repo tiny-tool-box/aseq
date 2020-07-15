@@ -49,7 +49,6 @@ img {
     flex-direction: column;
     align-items: center;
     border: #92b4a7 2px solid;
-    filter: drop-shadow(0 0 0.15rem black);
 }
 
 .pose-card > * {

@@ -4,11 +4,14 @@ $(document).ready(() => {
         poseTimeRemaining,
         poseTimeoutId,
         currentPose,
-        currentPoseDuration;
+        currentPoseDuration,
+        currentSide;
     let totalDuration = 0;
     let poseIndex = 0;
     let isPaused = true;
     const poseEndWarningTime = 1000;
+
+    // global variable to check which index o card Im on and which side am I on. if -1 then move forward but dont change side. if not negative one, then switch side and then move forward.
 
     // Calculate total duration of given yoga sequence in seconds.
     sequence.map((pose) => (totalDuration += pose.duration * 60));
@@ -22,10 +25,15 @@ $(document).ready(() => {
             info.forEach((item, key, arr) => {
                 // If only 1 item in mini-sequence, or last item in mini-sequence, set array value = to its poseIndex
                 if (arr.length == 1 || Object.is(arr.length - 1, key)) {
-                    otherSideStart[index] = index;
+                    if (otherSideStart[index - 1] == -1) {
+                        otherSideStart.push(otherSideStart.indexOf(-1));
+                    } else {
+                        otherSideStart.push(index);
+                    }
                 } else if (arr.some((x) => x.pose.otherSide)) {
-                    otherSideStart[index] = -1;
+                    otherSideStart.push(-1);
                 }
+
                 index++;
 
                 let { otherSide, name, description, imageRef } = item.pose;
@@ -42,6 +50,7 @@ $(document).ready(() => {
         });
 
         $("#pose-container").html(output);
+        console.log("otherSideStart :>> ", otherSideStart);
     };
     genCards();
 
@@ -61,9 +70,10 @@ $(document).ready(() => {
             poseStartTime = new Date();
 
             poseTimeoutId = setTimeout(() => {
-                if (currentPose.data("otherside")) {
-                    // if (otherSideStart[poseIndex] < 0) {
+                // if (currentPose.data("otherside")) {
+                if (otherSideStart[poseIndex] >= 0) {
                     // Set "otherSide" data attribute to opposite value after first switch.
+
                     // this is required for the click to set pose feature to work smoothly
                     currentPose.data().otherside = !currentPose.data()
                         .otherside;

@@ -100,3 +100,7 @@ const sequence = [
         },
     ],
 ];
+
+const warningInterval = {
+    warningTime: 15000,
+};
