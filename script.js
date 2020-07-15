@@ -4,9 +4,10 @@ $(document).ready(() => {
         poseTimeRemaining,
         poseTimeoutId,
         currentPose,
-        currentPoseDuration,
-        currentSide;
+        currentPoseDuration;
     let totalDuration = 0;
+    let currentPoseIndex = 0;
+    let currentSide = "first";
     let poseIndex = 0;
     let isPaused = true;
     const poseEndWarningTime = 1000;
@@ -17,42 +18,40 @@ $(document).ready(() => {
     sequence.map((pose) => (totalDuration += pose.duration * 60));
 
     // ====================== GENERATE YOGA CARDS ======================= /
-    const genCards = () => {
-        let otherSideStart = [];
-        let index = 0;
-        let output = "";
-        $.each(sequence, (i, info) => {
-            info.forEach((item, key, arr) => {
-                // If only 1 item in mini-sequence, or last item in mini-sequence, set array value = to its poseIndex
-                if (arr.length == 1 || Object.is(arr.length - 1, key)) {
-                    if (otherSideStart[index - 1] == -1) {
-                        otherSideStart.push(otherSideStart.indexOf(-1));
-                    } else {
-                        otherSideStart.push(index);
-                    }
-                } else if (arr.some((x) => x.pose.otherSide)) {
-                    otherSideStart.push(-1);
+
+    let otherSideStart = [];
+    let index = 0;
+    let output = "";
+    $.each(sequence, (i, info) => {
+        info.forEach((item, key, arr) => {
+            // If only 1 item in mini-sequence, or last item in mini-sequence, set array value = to its poseIndex
+            if (arr.length == 1 || Object.is(arr.length - 1, key)) {
+                // If last part of mini sequence, push first index of mini sequence
+                if (otherSideStart[index - 1] === -1) {
+                    otherSideStart.push(otherSideStart.indexOf(-1));
+                } else {
+                    otherSideStart.push(index);
                 }
+            } else if (arr.some((x) => x.pose.otherSide)) {
+                otherSideStart.push(-1);
+            }
 
-                index++;
+            index++;
 
-                let { otherSide, name, description, imageRef } = item.pose;
+            let { otherSide, name, description, imageRef } = item.pose;
 
-                output += `<div class="pose-card" data-otherside=${otherSide} data-duration=${
-                    item.duration
-                } >
+            output += `<div class="pose-card" data-otherside=${otherSide} data-duration=${
+                item.duration
+            } >
                   <div class="pose-card-title">${name}</div>
                   <img src=${imageRef || "./assets/yoga-stick.png"} />
                   <h6>Duration: ${item.duration} min</h6>
                   <p class="description">${description || "No description"}</p>
               </div>`;
-            });
         });
+    });
 
-        $("#pose-container").html(output);
-        console.log("otherSideStart :>> ", otherSideStart);
-    };
-    genCards();
+    $("#pose-container").html(output);
 
     // Cycle through all poses on timer.
     const $poses = $(".pose-card");
@@ -71,22 +70,38 @@ $(document).ready(() => {
 
             poseTimeoutId = setTimeout(() => {
                 // if (currentPose.data("otherside")) {
-                if (otherSideStart[poseIndex] >= 0) {
+                console.log(
+                    "otherSideStart[poseIndex] :>> ",
+                    otherSideStart[poseIndex]
+                );
+                if (otherSideStart[poseIndex] < 0) {
                     // Set "otherSide" data attribute to opposite value after first switch.
-
                     // this is required for the click to set pose feature to work smoothly
                     currentPose.data().otherside = !currentPose.data()
                         .otherside;
-                    // poseIndex++;
-                    setPose();
-                    currentPose
-                        .addClass("switch-side active-pose-second")
-                        .removeClass("almost-done");
-                } else {
-                    currentPose.addClass("done").removeClass("almost-done");
-                    playNextPoseAudio();
+                    // poseIndex = otherSideStart[poseIndex++];
+                    // otherSideStart[poseIndex] = 0;
+
                     poseIndex++;
+
                     setPose();
+
+                    // currentPose
+                    //     .addClass("switch-side active-pose-second")
+                    //     .removeClass("almost-done");
+                } else {
+                    if (otherSideStart[poseIndex - 1] == -1) {
+                        poseIndex = otherSideStart[poseIndex];
+                        currentPose.addClass("active-pose-second");
+                        setPose();
+                    } else {
+                        currentSide = "first";
+                        console.log("currentSide :>> ", currentSide);
+                        currentPose.addClass("done").removeClass("almost-done");
+                        playNextPoseAudio();
+                        poseIndex++;
+                        setPose();
+                    }
                 }
             }, poseTimeRemaining || currentPoseDuration);
 
