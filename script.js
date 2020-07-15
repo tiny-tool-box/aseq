@@ -69,39 +69,46 @@ $(document).ready(() => {
             poseStartTime = new Date();
 
             poseTimeoutId = setTimeout(() => {
-                // if (currentPose.data("otherside")) {
-                console.log(
-                    "otherSideStart[poseIndex] :>> ",
-                    otherSideStart[poseIndex]
-                );
-                if (otherSideStart[poseIndex] < 0) {
-                    // Set "otherSide" data attribute to opposite value after first switch.
-                    // this is required for the click to set pose feature to work smoothly
-                    currentPose.data().otherside = !currentPose.data()
-                        .otherside;
-                    // poseIndex = otherSideStart[poseIndex++];
-                    // otherSideStart[poseIndex] = 0;
+                // IF NON-LAST CARD IN MINI-SEQUENCE.
+                if (otherSideStart[poseIndex] === -1) {
+                    // Set "otherSide" data attribute to opposite value after first switch. this is required for the click to set pose feature to work smoothly
+                    //     currentPose.data().otherside = !currentPose.data()
+                    //         .otherside;
+
+                    currentPose.addClass("active-pose-second");
 
                     poseIndex++;
-
                     setPose();
 
                     // currentPose
                     //     .addClass("switch-side active-pose-second")
                     //     .removeClass("almost-done");
                 } else {
-                    if (otherSideStart[poseIndex - 1] == -1) {
+                    // IF LAST CARD IN MINI-SEQUENCE.
+                    if (otherSideStart[poseIndex - 1] === -1) {
                         poseIndex = otherSideStart[poseIndex];
-                        currentPose.addClass("active-pose-second");
+                        otherSideStart = [0, 1, 2, 3, 4, 5, 6, 7];
+                        // currentPose.addClass("active-pose-second");
                         setPose();
                     } else {
-                        currentSide = "first";
-                        console.log("currentSide :>> ", currentSide);
-                        currentPose.addClass("done").removeClass("almost-done");
-                        playNextPoseAudio();
-                        poseIndex++;
-                        setPose();
+                        if (currentPose.data("otherside")) {
+                            console.log("two sided");
+                            currentPose
+                                .addClass("switch-side active-pose-second")
+                                .removeClass("almost-done");
+                            currentPose.data().otherside = !currentPose.data()
+                                .otherside;
+                            setPose();
+                        } else {
+                            currentPose
+                                .addClass("done")
+                                .removeClass("almost-done");
+                            playNextPoseAudio();
+                            poseIndex++;
+                            setPose();
+                        }
                     }
+                    // }
                 }
             }, poseTimeRemaining || currentPoseDuration);
 

@@ -101,6 +101,6 @@ const sequence = [
     ],
 ];
 
-const warningInterval = {
+const config = {
     warningTime: 15000,
 };
