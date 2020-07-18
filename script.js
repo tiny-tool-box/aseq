@@ -101,7 +101,7 @@ $(document).ready(() => {
                             setPose();
                         } else {
                             currentPose
-                                .addClass("done")
+                                .addClass("done hidden")
                                 .removeClass("almost-done");
                             playNextPoseAudio();
                             poseIndex++;
@@ -163,14 +163,14 @@ $(document).ready(() => {
         $("#timer").stopwatch().stopwatch("toggle");
 
         if (isPaused) {
-            $("#pause-play-btn").text("PAUSE");
+            $("#play-pause-img").attr("src", "./assets/pause-button.png");
 
             poseStartTime = new Date();
             isPaused = false;
 
             setPose();
         } else {
-            $("#pause-play-btn").text("PLAY");
+            $("#play-pause-img").attr("src", "./assets/play-button.png");
 
             timeOfPause = new Date();
             isPaused = true;

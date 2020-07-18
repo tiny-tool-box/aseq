@@ -12,17 +12,28 @@
 
 header {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
+    margin: 10px;
+    margin-right: 5%;
+    margin-left: 5%;
 }
 
-button {
+#pause-play-btn {
+    width: 50px;
+    height: 10px;
+    margin-bottom: 50px;
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
     cursor: pointer;
-    width: 100px;
-    height: 30px;
-    text-transform: uppercase;
-    background-color: #92b4a7;
+    outline: inherit;
+}
+
+#play-pause-img {
+    width: 100%;
 }
 #timer {
     font-size: xx-large;
@@ -30,7 +41,7 @@ button {
 }
 
 img {
-    max-width: 250px;
+    max-width: 95%;
 }
 
 #pose-container {
@@ -38,23 +49,26 @@ img {
     flex-wrap: wrap;
     box-sizing: border-box;
     justify-content: center;
+    overflow: hidden;
 }
 
 .pose-card {
     width: 20%;
-    margin: 10px;
+    max-height: 100%;
+    margin: 15px;
     padding: 10px;
     background-color: #92b4a7;
     display: flex;
     flex-direction: column;
     align-items: center;
     border: #92b4a7 2px solid;
+    overflow: hidden;
 }
 
 .pose-card > * {
     border: #92b4a7 2px solid;
     background-color: #92b4a7;
-    max-width: 100%;
+    /* max-width: 100%; */
 }
 
 .active-pose-first {
@@ -100,7 +114,16 @@ img {
 }
 .pose-card:hover > .description {
     display: block;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.pose-card:hover > .description {
+    display: block;
     font-size: 11px;
+}
+.pose-card:hover > img {
+    display: none;
 }
 
 @keyframes flip-card {
@@ -112,7 +135,9 @@ img {
     }
 }
 
-@media screen and (max-width: 900px) {
+/* Mobile phone in Portrait */
+
+@media screen and (max-width: 900px) and (orientation: Portrait) {
     h1 {
         font-size: medium;
     }
@@ -123,7 +148,7 @@ img {
     }
     .pose-card {
         margin: 10px;
-        width: 40%;
+        width: 100%;
         height: 22vh;
     }
     .pose-card-title {
@@ -137,7 +162,7 @@ img {
     }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 600px) and (orientation: Portrait) {
     h1 {
         font-size: small;
     }
@@ -145,15 +170,19 @@ img {
         width: 50%;
     }
     .pose-card {
-        margin: 5px;
-        width: 40%;
+        margin: 10px;
+        width: 80%;
         height: 5%;
     }
     .pose-card-title {
         font-size: smaller;
     }
+    .hidden {
+        display: none;
+    }
 }
 
+/* Mobile phone in Landscape */
 @media screen and (max-width: 900px) and (orientation: landscape) {
     #pose-container {
         border: 3px green dotted;
