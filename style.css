@@ -68,7 +68,6 @@ img {
 .pose-card > * {
     border: #92b4a7 2px solid;
     background-color: #92b4a7;
-    /* max-width: 100%; */
 }
 
 .active-pose-first {
@@ -136,8 +135,7 @@ img {
     }
 }
 
-/* Mobile phone in Portrait */
-
+/* Mobile phone in Portrait
 @media screen and (max-width: 900px) and (orientation: Portrait) {
     h1 {
         font-size: medium;
@@ -161,53 +159,46 @@ img {
     .pose-card:hover > .description {
         display: none;
     }
-}
+} */
 
-@media screen and (max-width: 600px) and (orientation: Portrait) {
+@media screen and (max-width: 600px) {
     h1 {
         font-size: small;
     }
-    img {
-        width: 50%;
+    #play-pause-img {
+        transform: scale(0.5);
     }
-    .pose-card {
-        margin: 10px;
-        width: 80%;
-        height: 5%;
-    }
+
     .pose-card-title {
         font-size: smaller;
     }
     .hidden {
         display: none;
     }
+    .pose-card:hover > .description {
+        display: none;
+    }
+    .pose-card:hover > img {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 600px) and (orientation: Portrait) {
+    .pose-card {
+        margin: 10px;
+        width: 80%;
+        /* height: 5%; */
+    }
+    .pose-card > img {
+        max-width: 150px;
+    }
 }
 
 /* Mobile phone in Landscape */
-@media screen and (max-width: 900px) and (orientation: landscape) {
-    #pose-container {
-        border: 3px green dotted;
-    }
-    h1 {
-        font-size: medium;
-    }
-    button {
-        width: 100px;
-        height: 30px;
-        font-size: 10px;
-    }
+@media screen and (max-width: 600px) and (orientation: landscape) {
     .pose-card {
         margin: 10px;
         width: 20%;
         height: 37vh;
-    }
-    .pose-card-title {
-        font-size: x-small;
-    }
-    img {
-        width: 40%;
-    }
-    .pose-card:hover > .description {
-        display: none;
     }
 }

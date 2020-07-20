@@ -10,6 +10,7 @@ $(document).ready(() => {
     let currentSide = "first";
     let poseIndex = 0;
     let isPaused = true;
+    let miniSequenceInProgress = false;
     const poseEndWarningTime = 1000;
 
     // global variable to check which index o card Im on and which side am I on. if -1 then move forward but dont change side. if not negative one, then switch side and then move forward.
@@ -53,7 +54,7 @@ $(document).ready(() => {
 
     $("#pose-container").html(output);
 
-    // Cycle through all poses on timer.
+    // Cycle through all poses on.
     const $poses = $(".pose-card");
 
     const setPose = () => {
@@ -61,8 +62,14 @@ $(document).ready(() => {
         if (!isPaused && poseIndex < $poses.length) {
             $poses.removeClass("active-pose-first active-pose-second");
 
-            currentPose = $poses.eq(poseIndex);
+            // if (miniSequenceInProgress) {
+            //     currentPose.addClass("active-pose-second");
+            // } else {
+            //     $poses.removeClass("active-pose-first active-pose-second");
+            //     currentPose.addClass("active-pose-first");
+            // }
 
+            currentPose = $poses.eq(poseIndex);
             currentPose.addClass("active-pose-first");
 
             currentPoseDuration = currentPose.data("duration") * 1000;
@@ -72,33 +79,29 @@ $(document).ready(() => {
                 // IF NON-LAST CARD IN MINI-SEQUENCE.
                 if (otherSideStart[poseIndex] === -1) {
                     // Set "otherSide" data attribute to opposite value after first switch. this is required for the click to set pose feature to work smoothly
-                    //     currentPose.data().otherside = !currentPose.data()
-                    //         .otherside;
-
-                    currentPose.addClass("active-pose-second");
-
+                    // currentPose.data().otherside = !currentPose.data()
+                    //     .otherside;
+                    // miniSequenceInProgress = true;
                     poseIndex++;
                     setPose();
-
-                    // currentPose
-                    //     .addClass("switch-side active-pose-second")
-                    //     .removeClass("almost-done");
                 } else {
                     // IF LAST CARD IN MINI-SEQUENCE.
                     if (otherSideStart[poseIndex - 1] === -1) {
                         poseIndex = otherSideStart[poseIndex];
                         otherSideStart = [0, 1, 2, 3, 4, 5, 6, 7];
-                        // currentPose.addClass("active-pose-second");
+                        // miniSequenceInProgress = false;
                         setPose();
                     } else {
+                        // IF POSE REQUIRES R/L
                         if (currentPose.data("otherside")) {
-                            console.log("two sided");
-                            currentPose
-                                .addClass("switch-side active-pose-second")
-                                .removeClass("almost-done");
                             currentPose.data().otherside = !currentPose.data()
                                 .otherside;
                             setPose();
+                            currentPose
+                                .addClass("switch-side active-pose-second")
+                                .removeClass("almost-done");
+
+                            // IF POSE R/L DONE OR ONE-SIDED
                         } else {
                             currentPose
                                 .addClass("done hidden")
@@ -108,7 +111,6 @@ $(document).ready(() => {
                             setPose();
                         }
                     }
-                    // }
                 }
             }, poseTimeRemaining || currentPoseDuration);
 
@@ -154,7 +156,6 @@ $(document).ready(() => {
                 $(this).data().otherside = !$(this).data().otherside;
             }
         });
-
         setPose();
     });
 
@@ -184,11 +185,7 @@ $(document).ready(() => {
         }
     });
 
-    $("#reset-btn").click(() => {
-        location.reload();
-    });
-
-    // =======================  SOUNDS  ======================= //
+    // =======================  SOUND  ======================= //
 
     const playNextPoseAudio = () => {
         document.querySelector("#next-pose-audio").play();
