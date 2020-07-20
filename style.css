@@ -135,33 +135,7 @@ img {
     }
 }
 
-/* Mobile phone in Portrait
-@media screen and (max-width: 900px) and (orientation: Portrait) {
-    h1 {
-        font-size: medium;
-    }
-    button {
-        width: 100px;
-        height: 30px;
-        font-size: 10px;
-    }
-    .pose-card {
-        margin: 10px;
-        width: 100%;
-        height: 22vh;
-    }
-    .pose-card-title {
-        font-size: medium;
-    }
-    img {
-        width: 50%;
-    }
-    .pose-card:hover > .description {
-        display: none;
-    }
-} */
-
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 900px) {
     h1 {
         font-size: small;
     }
@@ -187,7 +161,6 @@ img {
     .pose-card {
         margin: 10px;
         width: 80%;
-        /* height: 5%; */
     }
     .pose-card > img {
         max-width: 150px;
@@ -195,10 +168,10 @@ img {
 }
 
 /* Mobile phone in Landscape */
-@media screen and (max-width: 600px) and (orientation: landscape) {
+@media screen and (max-width: 900px) and (orientation: landscape) {
     .pose-card {
-        margin: 10px;
-        width: 20%;
-        height: 37vh;
+        margin: 15px;
+        width: 28%;
+        height: 70vh;
     }
 }
