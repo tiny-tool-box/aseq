@@ -107,6 +107,7 @@ img {
     background-color: #575c75;
     border: #575c75 2px solid;
     opacity: 0.4;
+    transform: scale(1);
 }
 
 .pose-card > .description {
