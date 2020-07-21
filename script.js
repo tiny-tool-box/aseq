@@ -51,7 +51,9 @@ $(document).ready(() => {
                           ? item.duration + " mins — both sides."
                           : item.duration + " mins."
                   } </h6>
-                  <p class="description">${description || "No description"}</p>
+                  <p class=${
+                      description ? "description" : "no-description"
+                  }>${description}</p>
               </div>`;
         });
     });

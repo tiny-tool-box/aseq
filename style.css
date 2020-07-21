@@ -112,6 +112,9 @@ img {
 .pose-card > .description {
     display: none;
 }
+.pose-card > .no-description {
+    display: none;
+}
 .pose-card:hover > .description {
     display: block;
     font-size: 15px;
