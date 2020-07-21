@@ -6,12 +6,15 @@ $(document).ready(() => {
         currentPose,
         currentPoseDuration;
     let totalDuration = 0;
-    let currentPoseIndex = 0;
-    let currentSide = "first";
     let poseIndex = 0;
     let isPaused = true;
-    let miniSequenceInProgress = false;
+
+    // change to config.warningTime
     const poseEndWarningTime = 1000;
+
+    let currentPoseIndex = 0;
+    let currentSide = "first";
+    let miniSequenceInProgress = false;
 
     // global variable to check which index o card Im on and which side am I on. if -1 then move forward but dont change side. if not negative one, then switch side and then move forward.
 
@@ -46,7 +49,11 @@ $(document).ready(() => {
             } >
                   <div class="pose-card-title">${name}</div>
                   <img src=${imageRef || "./assets/yoga-stick.png"} />
-                  <h6>Duration: ${item.duration} min</h6>
+                  <h6>Duration: ${
+                      otherSide
+                          ? item.duration + " mins — each side"
+                          : item.duration + " mins"
+                  }</h6>
                   <p class="description">${description || "No description"}</p>
               </div>`;
         });
