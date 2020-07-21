@@ -46,7 +46,11 @@ $(document).ready(() => {
             } >
                   <div class="pose-card-title">${name}</div>
                   <img src=${imageRef || "./assets/yoga-stick.png"} />
-                  <h6>Duration: ${item.duration} min</h6>
+                  <h6>Duration: ${
+                      otherSide
+                          ? item.duration + " mins — both sides."
+                          : item.duration + " mins."
+                  } </h6>
                   <p class="description">${description || "No description"}</p>
               </div>`;
         });
