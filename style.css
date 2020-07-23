@@ -54,7 +54,7 @@ img {
 
 .pose-card {
     width: 20%;
-    max-height: 100%;
+    min-height: 100%;
     margin: 15px;
     padding: 10px;
     background-color: #92b4a7;
@@ -70,24 +70,24 @@ img {
     background-color: #92b4a7;
 }
 
-.active-pose-first {
+.first {
     border: #ffd23f 2px solid;
     background-color: #ffd23f;
     transform: scale(1.07);
 }
 
-.active-pose-first > * {
+.first > * {
     border: #ffd23f 2px solid;
     background-color: #ffd23f;
 }
 
-.active-pose-second {
+.second {
     border: #02deb2 2px solid;
     background-color: #02deb2;
     transform: scale(1.07);
 }
 
-.active-pose-second > * {
+.second > * {
     border: #02deb2 2px solid;
     background-color: #02deb2;
 }
@@ -117,13 +117,10 @@ img {
 }
 .pose-card:hover > .description {
     display: block;
-    font-size: 15px;
-    line-height: 1.5;
-}
-
-.pose-card:hover > .description {
-    display: block;
-    font-size: 11px;
+    font-size: 1em;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.2;
 }
 .pose-card:hover > img {
     display: none;

@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    let poseStartTime,
+    let currentPoseStartTime,
         timeOfPause,
         poseTimeRemaining,
         poseTimeoutId,
@@ -21,23 +21,23 @@ $(document).ready(() => {
     // ====================== GENERATE YOGA CARDS ======================= /
 
     let otherSideStart = [];
-    let index = 0;
+    let otherSideIndex = 0;
     let output = "";
     $.each(sequence, (i, info) => {
         info.forEach((item, key, arr) => {
             // If only 1 item in mini-sequence, or last item in mini-sequence, set array value = to its poseIndex
             if (arr.length == 1 || Object.is(arr.length - 1, key)) {
                 // If last part of mini sequence, push first index of mini sequence
-                if (otherSideStart[index - 1] === -1) {
+                if (otherSideStart[otherSideIndex - 1] === -1) {
                     otherSideStart.push(otherSideStart.indexOf(-1));
                 } else {
-                    otherSideStart.push(index);
+                    otherSideStart.push(otherSideIndex);
                 }
             } else if (arr.some((x) => x.pose.otherSide)) {
                 otherSideStart.push(-1);
             }
 
-            index++;
+            otherSideIndex++;
 
             let { otherSide, name, description, imageRef } = item.pose;
 
@@ -46,14 +46,12 @@ $(document).ready(() => {
             } >
                   <div class="pose-card-title">${name}</div>
                   <img src=${imageRef || "./assets/yoga-stick.png"} />
+                   <p class=${description ? "description" : "no-description"}>${description}</p>
                   <h6>Duration: ${
                       otherSide
-                          ? item.duration + " mins — both sides."
-                          : item.duration + " mins."
+                          ? item.duration * 1000 + " mins — each side"
+                          : item.duration * 1000 + " mins"
                   } </h6>
-                  <p class=${
-                      description ? "description" : "no-description"
-                  }>${description}</p>
               </div>`;
         });
     });
@@ -63,70 +61,106 @@ $(document).ready(() => {
     // Cycle through all poses on.
     const $poses = $(".pose-card");
 
-    const setPose = () => {
-        // If not paused and poses remaining, play next pose.
+    const updatePoseState = (currentPose, poseSide) => {
+        // Check if not paused and poses in sequence remaining.
         if (!isPaused && poseIndex < $poses.length) {
-            $poses.removeClass("active-pose-first active-pose-second");
+            currentPoseDuration = getPoseData("duration");
+            currentPoseStartTime = new Date();
 
-            // if (miniSequenceInProgress) {
-            //     currentPose.addClass("active-pose-second");
-            // } else {
-            //     $poses.removeClass("active-pose-first active-pose-second");
-            //     currentPose.addClass("active-pose-first");
-            // }
+            // Add "first" or "second" class depending on given side.
+            addClassToCurrentPose(poseSide);
 
-            currentPose = $poses.eq(poseIndex);
-            currentPose.addClass("active-pose-first");
-
-            currentPoseDuration = currentPose.data("duration") * 1000;
-            poseStartTime = new Date();
-
-            poseTimeoutId = setTimeout(() => {
-                // IF NON-LAST CARD IN MINI-SEQUENCE.
-                if (otherSideStart[poseIndex] === -1) {
-                    // Set "otherSide" data attribute to opposite value after first switch. this is required for the click to set pose feature to work smoothly
-                    // currentPose.data().otherside = !currentPose.data()
-                    //     .otherside;
-                    // miniSequenceInProgress = true;
-                    poseIndex++;
-                    setPose();
-                } else {
-                    // IF LAST CARD IN MINI-SEQUENCE.
-                    if (otherSideStart[poseIndex - 1] === -1) {
-                        poseIndex = otherSideStart[poseIndex];
-                        otherSideStart = [0, 1, 2, 3, 4, 5, 6, 7];
-                        // miniSequenceInProgress = false;
-                        setPose();
-                    } else {
-                        // IF POSE REQUIRES R/L
-                        if (currentPose.data("otherside")) {
-                            currentPose.data().otherside = !currentPose.data()
-                                .otherside;
-                            setPose();
-                            currentPose
-                                .addClass("switch-side active-pose-second")
-                                .removeClass("almost-done");
-
-                            // IF POSE R/L DONE OR ONE-SIDED
-                        } else {
-                            currentPose
-                                .addClass("done hidden")
-                                .removeClass("almost-done");
-                            playNextPoseAudio();
-                            poseIndex++;
-                            setPose();
-                        }
-                    }
-                }
-            }, poseTimeRemaining || currentPoseDuration);
+            poseTimeoutId = setTimeout(() => {}, poseTimeRemaining || currentPoseDuration);
 
             poseEndWarningTimeoutId = setTimeout(() => {
-                if (!currentPose.data("otherside")) {
-                    currentPose.addClass("almost-done");
+                if (!getPoseData("otherside")) {
+                    addClassToCurrentPose("almost-done");
                 }
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
+        } else {
+            console.log("sequence is finished");
         }
     };
+
+    const updateUserInterface = (poseInFocus, poseSide, poseHasBorder, poseIsRotating) => {};
+
+    // HELPER FUNCTIONS
+    const addClassToCurrentPose = (targetClass) => {
+        $poses.eq(poseInFocus).addClass(targetClass);
+    };
+
+    const getPoseData = (targetData) => $poses.eq(poseInFocus).data(targetData);
+
+    // const setPose = () => {
+    //     // If not paused and poses remaining, play next pose.
+    //     if (!isPaused && poseIndex < $poses.length) {
+    //         $poses.removeClass("active-pose-first active-pose-second");
+
+    //         currentPose = $poses.eq(poseIndex);
+    //         currentPose.addClass("active-pose-first");
+
+    //         currentPoseDuration = currentPose.data("duration") * 1000;
+    //         poseStartTime = new Date();
+
+    //         poseTimeoutId = setTimeout(() => {
+    //             // IF NON-LAST CARD IN MINI-SEQUENCE.
+    //             if (otherSideStart[poseIndex] === -1) {
+    //                 // Set "otherSide" data attribute to opposite value after first switch. this is required for the click to set pose feature to work smoothly.
+    //                 currentPose.data().otherside = !currentPose.data()
+    //                     .otherside;
+    //                 // miniSequenceInProgress = true;
+    //                 poseIndex++;
+    //                 console.log(
+    //                     "First if block, if non last card in mini sequence"
+    //                 );
+    //                 setPose();
+    //             } else {
+    //                 // IF LAST CARD IN MINI-SEQUENCE.
+    //                 if (otherSideStart[poseIndex - 1] === -1) {
+    //                     poseIndex = otherSideStart[poseIndex];
+    //                     otherSideStart = [0, 1, 2, 3, 4, 5, 6, 7];
+    //                     // miniSequenceInProgress = false;
+    //                     console.log(
+    //                         "Second if block, if last card in mini sequence"
+    //                     );
+
+    //                     setPose();
+    //                 } else {
+    //                     // IF POSE REQUIRES R/L
+    //                     if (currentPose.data("otherside")) {
+    //                         currentPose.data().otherside = !currentPose.data()
+    //                             .otherside;
+    //                         console.log("Third if block, if two sided pose");
+
+    //                         setPose();
+    //                         currentPose
+    //                             .addClass("switch-side active-pose-second")
+    //                             .removeClass("almost-done");
+
+    //                         // IF POSE R/L DONE OR ONE-SIDED
+    //                     } else {
+    //                         currentPose
+    //                             .addClass("done hidden")
+    //                             .removeClass("almost-done");
+    //                         playNextPoseAudio();
+    //                         poseIndex++;
+    //                         console.log(
+    //                             "Fourth if block,if R/L done or one-sided"
+    //                         );
+
+    //                         setPose();
+    //                     }
+    //                 }
+    //             }
+    //         }, poseTimeRemaining || currentPoseDuration);
+
+    //         poseEndWarningTimeoutId = setTimeout(() => {
+    //             if (!currentPose.data("otherside")) {
+    //                 currentPose.addClass("almost-done");
+    //             }
+    //         }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
+    //     }
+    // };
 
     // Set pose to target card on click
     $(".pose-card").click(function () {
@@ -186,8 +220,7 @@ $(document).ready(() => {
             clearTimeout(poseEndWarningTimeoutId);
 
             // If paused during sequence, then create new variable that takes time pause into account.
-            poseTimeRemaining =
-                currentPoseDuration - (timeOfPause - poseStartTime);
+            poseTimeRemaining = currentPoseDuration - (timeOfPause - poseStartTime);
         }
     });
 
