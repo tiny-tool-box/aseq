@@ -3,7 +3,7 @@
 const poses = [
     {
         name: "Surya Namaskar — Classical Sun salutation",
-        otherSide: false,
+        twoSided: false,
         description:
             "For warmup, repeat the sun salutation sequence a few times. " +
             "Alternate the side, starting with the right foot: " +
@@ -14,7 +14,7 @@ const poses = [
     },
     {
         name: "Inhale: Knee Up",
-        otherSide: true,
+        twoSided: true,
         description:
             "Transfering weight to the standing leg, lift one knee to " +
             "hip-height. Check that the hips remain squared: facing forward, and parallel to the ground.",
@@ -22,7 +22,7 @@ const poses = [
     },
     {
         name: "Exhale: Twist",
-        otherSide: true,
+        twoSided: true,
         description:
             "Keeping the palms together, twist over the knee that is lifted: " +
             "when the right knee is up, twist to the right. Keep the hips suqared, and " +
@@ -31,7 +31,7 @@ const poses = [
     },
     {
         name: "Drop the Hands & Deepen Twist",
-        otherSide: true,
+        twoSided: true,
         description:
             "Inhaling, drop the shoulders away from the ears, opening the chest. " +
             "Let the hands drop diagonally, or straighted to the sides. Optionally, " +
@@ -41,7 +41,7 @@ const poses = [
     },
     {
         name: "Trikonasana — Triangle",
-        otherSide: true,
+        twoSided: true,
         description:
             "Make a step back, with the back foot and the hips facing the long edge of the mat. " +
             "Keep the front foot facing the short edge of the mat. With hands on the shoulders, or out " +
@@ -52,13 +52,13 @@ const poses = [
     },
     {
         name: "Revolved Triangle",
-        otherSide: true,
+        twoSided: true,
         description: null,
         imageRef: "./assets/aseq-revolved-triangle.png",
     },
     {
         name: "Warrior I to Warrior III",
-        otherSide: true,
+        twoSided: true,
         description:
             "From standing, inhale lift the knee, exhale step back to Warrior I: the back foot " +
             "at a 45-degree angle. Inhale palms together and up, dropping shoulders away form the ears " +
@@ -69,7 +69,7 @@ const poses = [
     },
     {
         name: "Warrior III to Half-Moon",
-        otherSide: true,
+        twoSided: true,
         description:
             "Transition through Warrior I to Warrior III, then look down. If you are standing on " +
             "the right foot, ground the left palm on the mat or block; bring the other hand to the shoulder. " +

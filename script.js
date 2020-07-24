@@ -7,13 +7,11 @@ $(document).ready(() => {
         currentPoseDuration;
     let totalDuration = 0;
     // let currentPoseIndex = 0;
-    let currentSide = "first";
+    let currentPoseSide = "first";
     let poseIndex = 0;
     let isPaused = true;
     let miniSequenceInProgress = false;
     const poseEndWarningTime = 1000;
-
-    // global variable to check which index o card Im on and which side am I on. if -1 then move forward but dont change side. if not negative one, then switch side and then move forward.
 
     // Calculate total duration of given yoga sequence in seconds.
     sequence.map((pose) => (totalDuration += pose.duration * 60));
@@ -39,18 +37,16 @@ $(document).ready(() => {
 
             otherSideIndex++;
 
-            let { otherSide, name, description, imageRef } = item.pose;
+            let { twoSided, name, description, imageRef } = item.pose;
 
-            output += `<div class="pose-card" data-otherside=${otherSide} data-duration=${
+            output += `<div class="pose-card" data-twosided=${twoSided} data-duration=${
                 item.duration
             } >
                   <div class="pose-card-title">${name}</div>
                   <img src=${imageRef || "./assets/yoga-stick.png"} />
                    <p class=${description ? "description" : "no-description"}>${description}</p>
                   <h6>Duration: ${
-                      otherSide
-                          ? item.duration * 1000 + " mins — each side"
-                          : item.duration * 1000 + " mins"
+                      twoSided ? item.duration + " mins — each side" : item.duration + " mins"
                   } </h6>
               </div>`;
         });
@@ -61,24 +57,37 @@ $(document).ready(() => {
     // Cycle through all poses on.
     const $poses = $(".pose-card");
 
-    const updatePoseState = (currentPose, poseSide) => {
+    const updatePoseState = (poseIndex, currentPoseSide) => {
         // Check if not paused and poses in sequence remaining.
+
+        // console.log("poseIndex < $poses.length :>> ", poseIndex < $poses.length);
+        // console.log("isPaused :>> ", isPaused);
         if (!isPaused && poseIndex < $poses.length) {
-            currentPoseDuration = getPoseData("duration");
+            currentPoseDuration = getPoseData("duration") * 1000;
             currentPoseStartTime = new Date();
+            console.log("currentPoseDuration  :>> ", currentPoseDuration);
 
-            // Add "first" or "second" class depending on given side.
-            addClassToCurrentPose(poseSide);
+            poseTimeoutId = setTimeout(() => {
+                // Add "first" or "second" class depending on given side.
+                addClassToCurrentPose(currentPoseSide);
 
-            poseTimeoutId = setTimeout(() => {}, poseTimeRemaining || currentPoseDuration);
+                // If two-sided pose and on first side, updatePoseState to second side.
+                // Else move to next index.
+                if (getPoseData("twosided") && currentPoseSide == "first") {
+                    updatePoseState(poseIndex, "second");
+                } else {
+                    updatePoseState(poseIndex++, "first");
+                }
+            }, poseTimeRemaining || currentPoseDuration);
 
             poseEndWarningTimeoutId = setTimeout(() => {
-                if (!getPoseData("otherside")) {
+                // If one-sided pose or on second side, add warning border.
+                if (!getPoseData("twosided") || currentPoseSide == "second") {
                     addClassToCurrentPose("almost-done");
                 }
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
         } else {
-            console.log("sequence is finished");
+            alert("sequence is finished");
         }
     };
 
@@ -86,10 +95,10 @@ $(document).ready(() => {
 
     // HELPER FUNCTIONS
     const addClassToCurrentPose = (targetClass) => {
-        $poses.eq(poseInFocus).addClass(targetClass);
+        $poses.eq(poseIndex).addClass(targetClass);
     };
 
-    const getPoseData = (targetData) => $poses.eq(poseInFocus).data(targetData);
+    const getPoseData = (targetData) => $poses.eq(poseIndex).data(targetData);
 
     // const setPose = () => {
     //     // If not paused and poses remaining, play next pose.
@@ -196,7 +205,7 @@ $(document).ready(() => {
                 $(this).data().otherside = !$(this).data().otherside;
             }
         });
-        setPose();
+        updatePoseState(poseIndex, currentPoseSide);
     });
 
     // Start routine and timer on click, or pause if already started.
@@ -209,7 +218,7 @@ $(document).ready(() => {
             poseStartTime = new Date();
             isPaused = false;
 
-            setPose();
+            updatePoseState(poseIndex, currentPoseSide);
         } else {
             $("#play-pause-img").attr("src", "./assets/play-button.png");
 
