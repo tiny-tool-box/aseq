@@ -54,36 +54,38 @@ $(document).ready(() => {
 
     $("#pose-container").html(output);
 
-    // Cycle through all poses on.
     const $poses = $(".pose-card");
 
     const updatePoseState = (poseIndex, currentPoseSide) => {
+        // Clear UI state.
+        $poses.removeClass().addClass("pose-card");
+
+        // Set first pose, and timeout for following pose.
+        currentPoseDuration = getPoseData("duration", poseIndex) * 1000;
+        currentPoseStartTime = new Date();
+
+        // Add "first" or "second" class depending on given side.
+        addClassToPoseAtIndex(currentPoseSide, poseIndex);
+
         // Check if not paused and poses in sequence remaining.
-
-        // console.log("poseIndex < $poses.length :>> ", poseIndex < $poses.length);
-        // console.log("isPaused :>> ", isPaused);
         if (!isPaused && poseIndex < $poses.length) {
-            currentPoseDuration = getPoseData("duration") * 1000;
-            currentPoseStartTime = new Date();
-            console.log("currentPoseDuration  :>> ", currentPoseDuration);
-
             poseTimeoutId = setTimeout(() => {
-                // Add "first" or "second" class depending on given side.
-                addClassToCurrentPose(currentPoseSide);
-
-                // If two-sided pose and on first side, updatePoseState to second side.
-                // Else move to next index.
-                if (getPoseData("twosided") && currentPoseSide == "first") {
+                // If two-sided pose and on first side, updatePoseState to second side, else move to next index.
+                if (getPoseData("twosided", poseIndex) && currentPoseSide == "first") {
                     updatePoseState(poseIndex, "second");
+                    console.log("first if");
                 } else {
-                    updatePoseState(poseIndex++, "first");
+                    poseIndex++;
+                    console.log("poseIndex if else block :>> ", poseIndex);
+                    updatePoseState(poseIndex, "first");
+                    console.log("second else");
                 }
             }, poseTimeRemaining || currentPoseDuration);
 
             poseEndWarningTimeoutId = setTimeout(() => {
                 // If one-sided pose or on second side, add warning border.
-                if (!getPoseData("twosided") || currentPoseSide == "second") {
-                    addClassToCurrentPose("almost-done");
+                if (!getPoseData("twosided", poseIndex) || currentPoseSide == "second") {
+                    addClassToPoseAtIndex("almost-done", poseIndex);
                 }
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
         } else {
@@ -94,11 +96,12 @@ $(document).ready(() => {
     const updateUserInterface = (poseInFocus, poseSide, poseHasBorder, poseIsRotating) => {};
 
     // HELPER FUNCTIONS
-    const addClassToCurrentPose = (targetClass) => {
+    const addClassToPoseAtIndex = (targetClass, poseIndex) => {
+        console.log("poseIndex :>> ", poseIndex);
         $poses.eq(poseIndex).addClass(targetClass);
     };
 
-    const getPoseData = (targetData) => $poses.eq(poseIndex).data(targetData);
+    const getPoseData = (targetData, poseIndex) => $poses.eq(poseIndex).data(targetData);
 
     // const setPose = () => {
     //     // If not paused and poses remaining, play next pose.
