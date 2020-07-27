@@ -57,48 +57,47 @@ $(document).ready(() => {
     const $poses = $(".pose-card");
 
     const updatePoseState = (poseIndex, currentPoseSide) => {
-        // Clear UI state.
-        $poses.removeClass().addClass("pose-card");
-
-        // Set first pose, and timeout for following pose.
-        currentPoseDuration = getPoseData("duration", poseIndex) * 1000;
-        currentPoseStartTime = new Date();
-
-        // Add "first" or "second" class depending on given side.
-        addClassToPoseAtIndex(currentPoseSide, poseIndex);
-
         // Check if not paused and poses in sequence remaining.
         if (!isPaused && poseIndex < $poses.length) {
+            // Set first pose, and timeout for following pose.
+            currentPoseDuration = getPoseData("duration", poseIndex) * 1000;
+            currentPoseStartTime = new Date();
+
+            // Add "first" or "second" class depending on given side.
+            addClassToPose(currentPoseSide, poseIndex);
+
             poseTimeoutId = setTimeout(() => {
                 // If two-sided pose and on first side, updatePoseState to second side, else move to next index.
                 if (getPoseData("twosided", poseIndex) && currentPoseSide == "first") {
                     updatePoseState(poseIndex, "second");
-                    console.log("first if");
                 } else {
-                    poseIndex++;
-                    console.log("poseIndex if else block :>> ", poseIndex);
-                    updatePoseState(poseIndex, "first");
-                    console.log("second else");
+                    updatePoseState(++poseIndex, "first");
+                    greyOutPoseAtIndex(poseIndex - 1);
                 }
             }, poseTimeRemaining || currentPoseDuration);
 
             poseEndWarningTimeoutId = setTimeout(() => {
                 // If one-sided pose or on second side, add warning border.
                 if (!getPoseData("twosided", poseIndex) || currentPoseSide == "second") {
-                    addClassToPoseAtIndex("almost-done", poseIndex);
+                    addClassToPose("almost-done", poseIndex);
                 }
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
         } else {
-            alert("sequence is finished");
+            alert("Sequence is finished");
         }
     };
 
     const updateUserInterface = (poseInFocus, poseSide, poseHasBorder, poseIsRotating) => {};
 
-    // HELPER FUNCTIONS
-    const addClassToPoseAtIndex = (targetClass, poseIndex) => {
-        console.log("poseIndex :>> ", poseIndex);
+    // ============ HELPER FUNCTIONS ============ //
+    const addClassToPose = (targetClass, poseIndex) => {
         $poses.eq(poseIndex).addClass(targetClass);
+    };
+
+    const greyOutPoseAtIndex = (poseIndex) => {
+        console.log("greyOut is called");
+        console.log("poseIndex :>> ", poseIndex);
+        $poses.eq(poseIndex).addClass("done");
     };
 
     const getPoseData = (targetData, poseIndex) => $poses.eq(poseIndex).data(targetData);
