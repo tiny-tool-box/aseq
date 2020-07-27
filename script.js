@@ -1,16 +1,11 @@
 $(document).ready(() => {
-    let currentPoseStartTime,
-        timeOfPause,
-        poseTimeRemaining,
-        poseTimeoutId,
-        currentPose,
-        currentPoseDuration;
+    let currentPoseStartTime, timeOfPause, poseTimeRemaining, poseTimeoutId, currentPose, currentPoseDuration;
     let totalDuration = 0;
     // let currentPoseIndex = 0;
     let currentPoseSide = "first";
     let poseIndex = 0;
     let isPaused = true;
-    let miniSequenceInProgress = false;
+    let flowInProgress = false;
     const poseEndWarningTime = 1000;
 
     // Calculate total duration of given yoga sequence in seconds.
@@ -18,7 +13,7 @@ $(document).ready(() => {
 
     // ====================== GENERATE YOGA CARDS ======================= /
 
-    let otherSideStart = [];
+    let flowStart = [];
     let otherSideIndex = 0;
     let output = "";
     $.each(sequence, (i, info) => {
@@ -26,28 +21,24 @@ $(document).ready(() => {
             // If only 1 item in mini-sequence, or last item in mini-sequence, set array value = to its poseIndex
             if (arr.length == 1 || Object.is(arr.length - 1, key)) {
                 // If last part of mini sequence, push first index of mini sequence
-                if (otherSideStart[otherSideIndex - 1] === -1) {
-                    otherSideStart.push(otherSideStart.indexOf(-1));
+                if (flowStart[otherSideIndex - 1] === -1) {
+                    flowStart.push(flowStart.indexOf(-1));
                 } else {
-                    otherSideStart.push(otherSideIndex);
+                    flowStart.push(otherSideIndex);
                 }
-            } else if (arr.some((x) => x.pose.otherSide)) {
-                otherSideStart.push(-1);
+            } else if (arr.some((x) => x.pose.twoSided)) {
+                flowStart.push(-1);
             }
 
             otherSideIndex++;
 
             let { twoSided, name, description, imageRef } = item.pose;
 
-            output += `<div class="pose-card" data-twosided=${twoSided} data-duration=${
-                item.duration
-            } >
+            output += `<div class="pose-card" data-twosided=${twoSided} data-duration=${item.duration} >
                   <div class="pose-card-title">${name}</div>
                   <img src=${imageRef || "./assets/yoga-stick.png"} />
                    <p class=${description ? "description" : "no-description"}>${description}</p>
-                  <h6>Duration: ${
-                      twoSided ? item.duration + " mins — each side" : item.duration + " mins"
-                  } </h6>
+                  <h6>Duration: ${twoSided ? item.duration + " mins — each side" : item.duration + " mins"} </h6>
               </div>`;
         });
     });
@@ -55,6 +46,7 @@ $(document).ready(() => {
     $("#pose-container").html(output);
 
     const $poses = $(".pose-card");
+    console.log("flowStart :>> ", flowStart);
 
     const updatePoseState = (poseIndex, currentPoseSide) => {
         // Check if not paused and poses in sequence remaining.
@@ -63,19 +55,26 @@ $(document).ready(() => {
             currentPoseDuration = getPoseData("duration", poseIndex) * 1000;
             currentPoseStartTime = new Date();
 
+            // Check if flow is in progress.
+            flowStart[poseIndex] < 0 ? (flowInProgress = true) : (flowInProgress = false);
+
             // Add "first" or "second" class depending on given side.
             addClassToPose(currentPoseSide, poseIndex);
 
             poseTimeoutId = setTimeout(() => {
+                if (flowInProgress) {
+                    updatePoseState(++poseIndex, "first");
+                }
                 // If two-sided pose and on first side, updatePoseState to second side, else move to next index.
-                if (getPoseData("twosided", poseIndex) && currentPoseSide == "first") {
+                else if (getPoseData("twosided", poseIndex) && currentPoseSide == "first") {
                     updatePoseState(poseIndex, "second");
                 } else {
                     updatePoseState(++poseIndex, "first");
-                    greyOutPoseAtIndex(poseIndex - 1);
+                    addClassToPose("done", poseIndex - 1);
                 }
             }, poseTimeRemaining || currentPoseDuration);
 
+            // TIMEOUT FOR WARNING BORDER.
             poseEndWarningTimeoutId = setTimeout(() => {
                 // If one-sided pose or on second side, add warning border.
                 if (!getPoseData("twosided", poseIndex) || currentPoseSide == "second") {
@@ -87,20 +86,14 @@ $(document).ready(() => {
         }
     };
 
-    const updateUserInterface = (poseInFocus, poseSide, poseHasBorder, poseIsRotating) => {};
-
     // ============ HELPER FUNCTIONS ============ //
     const addClassToPose = (targetClass, poseIndex) => {
         $poses.eq(poseIndex).addClass(targetClass);
     };
 
-    const greyOutPoseAtIndex = (poseIndex) => {
-        console.log("greyOut is called");
-        console.log("poseIndex :>> ", poseIndex);
-        $poses.eq(poseIndex).addClass("done");
-    };
-
     const getPoseData = (targetData, poseIndex) => $poses.eq(poseIndex).data(targetData);
+
+    const updateUserInterface = (poseInFocus, poseSide, poseHasBorder, poseIsRotating) => {};
 
     // const setPose = () => {
     //     // If not paused and poses remaining, play next pose.
@@ -115,7 +108,7 @@ $(document).ready(() => {
 
     //         poseTimeoutId = setTimeout(() => {
     //             // IF NON-LAST CARD IN MINI-SEQUENCE.
-    //             if (otherSideStart[poseIndex] === -1) {
+    //             if (flowStart[poseIndex] === -1) {
     //                 // Set "otherSide" data attribute to opposite value after first switch. this is required for the click to set pose feature to work smoothly.
     //                 currentPose.data().otherside = !currentPose.data()
     //                     .otherside;
@@ -127,9 +120,9 @@ $(document).ready(() => {
     //                 setPose();
     //             } else {
     //                 // IF LAST CARD IN MINI-SEQUENCE.
-    //                 if (otherSideStart[poseIndex - 1] === -1) {
-    //                     poseIndex = otherSideStart[poseIndex];
-    //                     otherSideStart = [0, 1, 2, 3, 4, 5, 6, 7];
+    //                 if (flowStart[poseIndex - 1] === -1) {
+    //                     poseIndex = flowStart[poseIndex];
+    //                     flowStart = [0, 1, 2, 3, 4, 5, 6, 7];
     //                     // miniSequenceInProgress = false;
     //                     console.log(
     //                         "Second if block, if last card in mini sequence"
