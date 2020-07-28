@@ -6,6 +6,7 @@ $(document).ready(() => {
     let poseIndex = 0;
     let isPaused = true;
     let flowInProgress = false;
+    let lastPoseInFlow = false;
     const poseEndWarningTime = 1000;
 
     // Calculate total duration of given yoga sequence in seconds.
@@ -48,7 +49,7 @@ $(document).ready(() => {
     const $poses = $(".pose-card");
     console.log("flowStart :>> ", flowStart);
 
-    const updatePoseState = (poseIndex, currentPoseSide) => {
+    const updatePoseState = (currentPoseSide, poseIndex) => {
         // Check if not paused and poses in sequence remaining.
         if (!isPaused && poseIndex < $poses.length) {
             // Set first pose, and timeout for following pose.
@@ -58,18 +59,26 @@ $(document).ready(() => {
             // Check if flow is in progress.
             flowStart[poseIndex] < 0 ? (flowInProgress = true) : (flowInProgress = false);
 
+            // Check if last pose of flow.
+            flowStart[poseIndex] < poseIndex && !flowInProgress ? (lastPoseInFlow = true) : (lastPoseInFlow = false);
+
             // Add "first" or "second" class depending on given side.
             addClassToPose(currentPoseSide, poseIndex);
 
             poseTimeoutId = setTimeout(() => {
                 if (flowInProgress) {
-                    updatePoseState(++poseIndex, "first");
+                    flowStart[poseIndex] = 1;
+                    updatePoseState("first", ++poseIndex);
                 }
                 // If two-sided pose and on first side, updatePoseState to second side, else move to next index.
-                else if (getPoseData("twosided", poseIndex) && currentPoseSide == "first") {
-                    updatePoseState(poseIndex, "second");
+                else if (lastPoseInFlow) {
+                    lastPoseInFlow = false;
+                    updatePoseState("second", flowStart[poseIndex]);
+                } else if (getPoseData("twosided", poseIndex) && currentPoseSide == "first") {
+                    updatePoseState("second", poseIndex);
                 } else {
-                    updatePoseState(++poseIndex, "first");
+                    updatePoseState("first", ++poseIndex);
+                    // Grey out previous/completed pose card.
                     addClassToPose("done", poseIndex - 1);
                 }
             }, poseTimeRemaining || currentPoseDuration);
@@ -200,7 +209,7 @@ $(document).ready(() => {
                 $(this).data().otherside = !$(this).data().otherside;
             }
         });
-        updatePoseState(poseIndex, currentPoseSide);
+        updatePoseState(currentPoseSide, poseIndex);
     });
 
     // Start routine and timer on click, or pause if already started.
@@ -213,7 +222,7 @@ $(document).ready(() => {
             poseStartTime = new Date();
             isPaused = false;
 
-            updatePoseState(poseIndex, currentPoseSide);
+            updatePoseState(currentPoseSide, poseIndex);
         } else {
             $("#play-pause-img").attr("src", "./assets/play-button.png");
 
