@@ -67,7 +67,7 @@ $(document).ready(() => {
 
             poseTimeoutId = setTimeout(() => {
                 if (flowInProgress) {
-                    flowStart[poseIndex] = 1;
+                    flowStart[poseIndex] = poseIndex;
                     updatePoseState("first", ++poseIndex);
                 }
                 // If two-sided pose and on first side, updatePoseState to second side, else move to next index.
