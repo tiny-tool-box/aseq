@@ -74,6 +74,7 @@ $(document).ready(() => {
                 else if (lastPoseInFlow) {
                     lastPoseInFlow = false;
                     updatePoseState("second", flowStart[poseIndex]);
+                    flowStart[poseIndex] = poseIndex;
                 } else if (getPoseData("twosided", poseIndex) && currentPoseSide == "first") {
                     updatePoseState("second", poseIndex);
                 } else {
