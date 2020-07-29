@@ -1,7 +1,6 @@
 $(document).ready(() => {
     let currentPoseStartTime, timeOfPause, poseTimeRemaining, poseTimeoutId, currentPose, currentPoseDuration;
     let totalDuration = 0;
-    // let currentPoseIndex = 0;
     let currentPoseSide = "first";
     let poseIndex = 0;
     let isPaused = true;
@@ -47,7 +46,6 @@ $(document).ready(() => {
     $("#pose-container").html(output);
 
     const $poses = $(".pose-card");
-    console.log("flowStart :>> ", flowStart);
 
     const updatePoseState = (currentPoseSide, poseIndex) => {
         // Check if not paused and poses in sequence remaining.
@@ -55,6 +53,7 @@ $(document).ready(() => {
             // Set first pose, and timeout for following pose.
             currentPoseDuration = getPoseData("duration", poseIndex) * 1000;
             currentPoseStartTime = new Date();
+            $poses.eq(poseIndex).hasClass("first") ? console.log("lets GO") : console.log("skip");
 
             // Check if flow is in progress.
             flowStart[poseIndex] < 0 ? (flowInProgress = true) : (flowInProgress = false);
@@ -67,19 +66,22 @@ $(document).ready(() => {
 
             poseTimeoutId = setTimeout(() => {
                 if (flowInProgress) {
+                    // After first pass, reset poseIndexes to the appropriate non-zero values.
                     flowStart[poseIndex] = poseIndex;
+                    addClassToPose("first-flow", poseIndex);
                     updatePoseState("first", ++poseIndex);
-                }
-                // If two-sided pose and on first side, updatePoseState to second side, else move to next index.
-                else if (lastPoseInFlow) {
+                } else if (lastPoseInFlow) {
                     lastPoseInFlow = false;
                     updatePoseState("second", flowStart[poseIndex]);
                     flowStart[poseIndex] = poseIndex;
+                    // If first side of flow completed, move on to second side.
+                } else if ($poses.eq(poseIndex).hasClass("first-flow")) {
+                    updatePoseState("second", ++poseIndex);
+                    addClassToPose("done", poseIndex - 1);
                 } else if (getPoseData("twosided", poseIndex) && currentPoseSide == "first") {
                     updatePoseState("second", poseIndex);
                 } else {
                     updatePoseState("first", ++poseIndex);
-                    // Grey out previous/completed pose card.
                     addClassToPose("done", poseIndex - 1);
                 }
             }, poseTimeRemaining || currentPoseDuration);
@@ -92,6 +94,8 @@ $(document).ready(() => {
                 }
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
         } else {
+            $("#timer").stopwatch().stopwatch("toggle");
+
             alert("Sequence is finished");
         }
     };
@@ -104,77 +108,6 @@ $(document).ready(() => {
     const getPoseData = (targetData, poseIndex) => $poses.eq(poseIndex).data(targetData);
 
     const updateUserInterface = (poseInFocus, poseSide, poseHasBorder, poseIsRotating) => {};
-
-    // const setPose = () => {
-    //     // If not paused and poses remaining, play next pose.
-    //     if (!isPaused && poseIndex < $poses.length) {
-    //         $poses.removeClass("active-pose-first active-pose-second");
-
-    //         currentPose = $poses.eq(poseIndex);
-    //         currentPose.addClass("active-pose-first");
-
-    //         currentPoseDuration = currentPose.data("duration") * 1000;
-    //         poseStartTime = new Date();
-
-    //         poseTimeoutId = setTimeout(() => {
-    //             // IF NON-LAST CARD IN MINI-SEQUENCE.
-    //             if (flowStart[poseIndex] === -1) {
-    //                 // Set "otherSide" data attribute to opposite value after first switch. this is required for the click to set pose feature to work smoothly.
-    //                 currentPose.data().otherside = !currentPose.data()
-    //                     .otherside;
-    //                 // miniSequenceInProgress = true;
-    //                 poseIndex++;
-    //                 console.log(
-    //                     "First if block, if non last card in mini sequence"
-    //                 );
-    //                 setPose();
-    //             } else {
-    //                 // IF LAST CARD IN MINI-SEQUENCE.
-    //                 if (flowStart[poseIndex - 1] === -1) {
-    //                     poseIndex = flowStart[poseIndex];
-    //                     flowStart = [0, 1, 2, 3, 4, 5, 6, 7];
-    //                     // miniSequenceInProgress = false;
-    //                     console.log(
-    //                         "Second if block, if last card in mini sequence"
-    //                     );
-
-    //                     setPose();
-    //                 } else {
-    //                     // IF POSE REQUIRES R/L
-    //                     if (currentPose.data("otherside")) {
-    //                         currentPose.data().otherside = !currentPose.data()
-    //                             .otherside;
-    //                         console.log("Third if block, if two sided pose");
-
-    //                         setPose();
-    //                         currentPose
-    //                             .addClass("switch-side active-pose-second")
-    //                             .removeClass("almost-done");
-
-    //                         // IF POSE R/L DONE OR ONE-SIDED
-    //                     } else {
-    //                         currentPose
-    //                             .addClass("done hidden")
-    //                             .removeClass("almost-done");
-    //                         playNextPoseAudio();
-    //                         poseIndex++;
-    //                         console.log(
-    //                             "Fourth if block,if R/L done or one-sided"
-    //                         );
-
-    //                         setPose();
-    //                     }
-    //                 }
-    //             }
-    //         }, poseTimeRemaining || currentPoseDuration);
-
-    //         poseEndWarningTimeoutId = setTimeout(() => {
-    //             if (!currentPose.data("otherside")) {
-    //                 currentPose.addClass("almost-done");
-    //             }
-    //         }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
-    //     }
-    // };
 
     // Set pose to target card on click
     $(".pose-card").click(function () {
