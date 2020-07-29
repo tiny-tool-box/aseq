@@ -46,7 +46,9 @@ $(document).ready(() => {
                   <div class="pose-card-title">${name}</div>
                   <img src=${imageRef || "./assets/yoga-stick.png"} />
                    <p class=${description ? "description" : "no-description"}>${description}</p>
-                  <h6>Duration: ${twoSided ? item.duration + " mins — each side" : item.duration + " mins"} </h6>
+                  <h6 class="duration">Duration: ${
+                      twoSided ? item.duration + " mins — each side" : item.duration + " mins"
+                  } </h6>
               </div>`;
         });
     });
@@ -104,7 +106,6 @@ $(document).ready(() => {
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
         } else {
             $("#timer").stopwatch().stopwatch("toggle");
-            alert("Sequence is finished");
         }
     };
 

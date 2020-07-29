@@ -54,7 +54,7 @@ img {
 
 .pose-card {
     width: 20%;
-    min-height: 100%;
+    min-height: 40vh;
     margin: 15px;
     padding: 10px;
     background-color: #92b4a7;
@@ -117,10 +117,10 @@ img {
 }
 .pose-card:hover > .description {
     display: block;
-    font-size: 1em;
+    font-size: 0.8rem;
     margin-top: 1rem;
     margin-bottom: 1rem;
-    line-height: 1.2;
+    line-height: 1.1;
 }
 .pose-card:hover > img {
     display: none;
