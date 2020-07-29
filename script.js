@@ -77,12 +77,12 @@ $(document).ready(() => {
                     // If first side of flow completed, move on to second side.
                 } else if (currentPose.hasClass("first-flow")) {
                     updatePoseState("second", ++poseIndex);
-                    addClassToPose("done", poseIndex - 1);
+                    greyOutPreviousPose(poseIndex);
                 } else if (getPoseData("twosided", poseIndex) && currentPoseSide == "first") {
                     updatePoseState("second", poseIndex);
                 } else {
                     updatePoseState("first", ++poseIndex);
-                    addClassToPose("done", poseIndex - 1);
+                    greyOutPreviousPose(poseIndex);
                 }
             }, poseTimeRemaining || currentPoseDuration);
 
@@ -98,15 +98,6 @@ $(document).ready(() => {
             alert("Sequence is finished");
         }
     };
-
-    // ============ HELPER FUNCTIONS ============ //
-    const addClassToPose = (targetClass, poseIndex) => {
-        $poses.eq(poseIndex).addClass(targetClass);
-    };
-
-    const getPoseData = (targetData, poseIndex) => $poses.eq(poseIndex).data(targetData);
-
-    const updateUserInterface = (poseInFocus, poseSide, poseHasBorder, poseIsRotating) => {};
 
     // Set pose to target card on click
     $(".pose-card").click(function () {
@@ -165,10 +156,21 @@ $(document).ready(() => {
             clearTimeout(poseTimeoutId);
             clearTimeout(poseEndWarningTimeoutId);
 
-            // If paused during sequence, then create new variable that takes time pause into account.
+            // If paused during sequence, then create new variable that takes pause time into account.
             poseTimeRemaining = currentPoseDuration - (timeOfPause - poseStartTime);
         }
     });
+
+    // ============ HELPER FUNCTIONS ============ //
+    const addClassToPose = (targetClass, poseIndex) => {
+        $poses.eq(poseIndex).addClass(targetClass);
+    };
+
+    const getPoseData = (targetData, poseIndex) => $poses.eq(poseIndex).data(targetData);
+
+    const greyOutPreviousPose = (poseIndex) => {
+        addClassToPose("done", poseIndex - 1);
+    };
 
     // =======================  SOUND  ======================= //
 
