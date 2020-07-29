@@ -53,7 +53,7 @@ $(document).ready(() => {
             // Set first pose, and timeout for following pose.
             currentPoseDuration = getPoseData("duration", poseIndex) * 1000;
             currentPoseStartTime = new Date();
-            $poses.eq(poseIndex).hasClass("first") ? console.log("lets GO") : console.log("skip");
+            currentPose = $poses.eq(poseIndex);
 
             // Check if flow is in progress.
             flowStart[poseIndex] < 0 ? (flowInProgress = true) : (flowInProgress = false);
@@ -75,7 +75,7 @@ $(document).ready(() => {
                     updatePoseState("second", flowStart[poseIndex]);
                     flowStart[poseIndex] = poseIndex;
                     // If first side of flow completed, move on to second side.
-                } else if ($poses.eq(poseIndex).hasClass("first-flow")) {
+                } else if (currentPose.hasClass("first-flow")) {
                     updatePoseState("second", ++poseIndex);
                     addClassToPose("done", poseIndex - 1);
                 } else if (getPoseData("twosided", poseIndex) && currentPoseSide == "first") {
@@ -95,7 +95,6 @@ $(document).ready(() => {
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
         } else {
             $("#timer").stopwatch().stopwatch("toggle");
-
             alert("Sequence is finished");
         }
     };
