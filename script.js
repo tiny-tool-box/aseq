@@ -111,7 +111,9 @@ $(document).ready(() => {
 
     // SET POSE TO TARGET CARD ON CLICK.
     $(".pose-card").click(function () {
-        $("#pause-play-btn").trigger("click");
+        if (isPaused) {
+            $("#pause-play-btn").trigger("click");
+        }
 
         clickedPoseIndex = $(".pose-card").index(this);
         flowStart = [...flowStartOnGen];
