@@ -128,5 +128,5 @@ const sequence = [
 ];
 
 const config = {
-    warningTime: 15000,
+    warningTime: 1000,
 };

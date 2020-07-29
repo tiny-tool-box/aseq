@@ -1,21 +1,29 @@
 $(document).ready(() => {
-    let currentPoseStartTime, timeOfPause, poseTimeRemaining, poseTimeoutId, currentPose, currentPoseDuration;
+    let timeOfPause,
+        poseTimeRemaining,
+        poseTimeoutId,
+        currentPose,
+        currentPoseDuration,
+        genOutput,
+        flowStart,
+        otherSideIndex,
+        flowStartOnGen;
     let totalDuration = 0;
-    let currentPoseSide = "first";
     let poseIndex = 0;
+    let currentPoseSide = "first";
     let isPaused = true;
     let flowInProgress = false;
     let lastPoseInFlow = false;
-    const poseEndWarningTime = 1000;
+    let poseEndWarningTime = config.warningTime;
+
+    // ====================== GENERATE YOGA CARDS ======================= /
 
     // Calculate total duration of given yoga sequence in seconds.
     sequence.map((pose) => (totalDuration += pose.duration * 60));
 
-    // ====================== GENERATE YOGA CARDS ======================= /
-
-    let flowStart = [];
-    let otherSideIndex = 0;
-    let output = "";
+    flowStart = [];
+    otherSideIndex = 0;
+    genOutput = "";
     $.each(sequence, (i, info) => {
         info.forEach((item, key, arr) => {
             // If only 1 item in mini-sequence, or last item in mini-sequence, set array value = to its poseIndex
@@ -34,7 +42,7 @@ $(document).ready(() => {
 
             let { twoSided, name, description, imageRef } = item.pose;
 
-            output += `<div class="pose-card" data-twosided=${twoSided} data-duration=${item.duration} >
+            genOutput += `<div class="pose-card" data-twosided=${twoSided} data-duration=${item.duration} >
                   <div class="pose-card-title">${name}</div>
                   <img src=${imageRef || "./assets/yoga-stick.png"} />
                    <p class=${description ? "description" : "no-description"}>${description}</p>
@@ -43,9 +51,11 @@ $(document).ready(() => {
         });
     });
 
-    $("#pose-container").html(output);
+    $("#pose-container").html(genOutput);
+    // Clone flowStart array for start pose on click functionality.
+    flowStartOnGen = [...flowStart];
 
-    const $poses = $(".pose-card");
+    let $poses = $(".pose-card");
 
     const updatePoseState = (currentPoseSide, poseIndex) => {
         // Check if not paused and poses in sequence remaining.
@@ -86,7 +96,6 @@ $(document).ready(() => {
                 }
             }, poseTimeRemaining || currentPoseDuration);
 
-            // TIMEOUT FOR WARNING BORDER.
             poseEndWarningTimeoutId = setTimeout(() => {
                 // If one-sided pose or on second side, add warning border.
                 if (!getPoseData("twosided", poseIndex) || currentPoseSide == "second") {
@@ -99,11 +108,17 @@ $(document).ready(() => {
         }
     };
 
-    // Set pose to target card on click
+    // SET POSE TO TARGET CARD ON CLICK.
     $(".pose-card").click(function () {
         $("#pause-play-btn").trigger("click");
 
         clickedPoseIndex = $(".pose-card").index(this);
+        flowStart = [...flowStartOnGen];
+
+        // If clicked pose is in flow or at end flow, start from beginning of flow
+        if (flowStart[clickedPoseIndex] < 0 || flowStart[clickedPoseIndex] < clickedPoseIndex) {
+            clickedPoseIndex = flowStart.indexOf(-1);
+        }
 
         // Get number of poses that preceded the clicked card and change appropriate classes
         let prevPosesLength = $(".pose-card").filter(function () {
@@ -111,29 +126,24 @@ $(document).ready(() => {
         }).length;
 
         for (let i = 0; i < prevPosesLength; i++) {
-            $poses.eq(i).removeClass().addClass("done pose-card");
+            $(".pose-card").eq(i).removeClass().addClass("done pose-card");
         }
 
         for (let i = clickedPoseIndex; i < $poses.length; i++) {
-            $poses.eq(i).removeClass().addClass("pose-card");
+            $(".pose-card").eq(i).removeClass().addClass("pose-card");
         }
-
-        // Refreshing relevant variables and timeouts
-        // clearTimeout(poseEndWarningTimeoutId);
+        // Resetting relevant variables and timeouts.
         clearTimeout(poseTimeoutId);
+        clearTimeout(poseEndWarningTimeoutId);
         poseIndex = clickedPoseIndex;
         poseStartTime = null;
         timeOfPause = null;
-        poseTimeRemaining = null;
         currentPoseDuration = null;
+        poseTimeRemaining = undefined;
+        flowInProgress = false;
+        lastPoseInFlow = false;
 
-        // if pose is already done, reset its otherside value to the original
-        $poses.each(function () {
-            if ($(this).hasClass("done") && isPaused) {
-                $(this).data().otherside = !$(this).data().otherside;
-            }
-        });
-        updatePoseState(currentPoseSide, poseIndex);
+        updatePoseState("first", clickedPoseIndex);
     });
 
     // Start routine and timer on click, or pause if already started.
