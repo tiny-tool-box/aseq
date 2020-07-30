@@ -129,7 +129,7 @@ $(document).ready(() => {
         }).length;
 
         for (let i = 0; i < prevPosesLength; i++) {
-            $(".pose-card").eq(i).removeClass().addClass("done pose-card");
+            $(".pose-card").eq(i).removeClass().addClass("done hidden pose-card");
         }
 
         for (let i = clickedPoseIndex; i < $poses.length; i++) {
