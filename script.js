@@ -105,7 +105,7 @@ $(document).ready(() => {
                 }
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
         } else {
-            $("#timer").stopwatch().stopwatch("toggle");
+            $("#pause-play-btn").trigger("click");
         }
     };
 
