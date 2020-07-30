@@ -171,9 +171,6 @@ img {
 
 /* Mobile phone in Landscape */
 @media screen and (max-width: 900px) and (orientation: landscape) {
-    body {
-        overflow: hidden;
-    }
     .pose-card {
         margin: 10px;
         width: 28%;
