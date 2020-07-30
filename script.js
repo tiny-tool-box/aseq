@@ -182,7 +182,7 @@ $(document).ready(() => {
     const getPoseData = (targetData, poseIndex) => $poses.eq(poseIndex).data(targetData);
 
     const greyOutPreviousPose = (poseIndex) => {
-        addClassToPose("done", poseIndex - 1);
+        addClassToPose("done hidden", poseIndex - 1);
     };
 
     // =======================  SOUND  ======================= //

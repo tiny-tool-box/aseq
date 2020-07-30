@@ -162,6 +162,7 @@ img {
     .pose-card {
         margin: 10px;
         width: 80%;
+        min-height: 27vh;
     }
     .pose-card > img {
         max-width: 150px;
