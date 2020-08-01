@@ -63,7 +63,7 @@ $(document).ready(() => {
         // Check if not paused and poses in sequence remaining.
         if (!isPaused && poseIndex < $poses.length) {
             // Set first pose, and timeout for following pose.
-            currentPoseDuration = getPoseData("duration", poseIndex) * 5000;
+            currentPoseDuration = getPoseData("duration", poseIndex) * 60000;
             currentPoseStartTime = new Date();
             currentPose = $poses.eq(poseIndex);
 
