@@ -3,11 +3,11 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    color: white;
+    color: black;
 }
 
 .pose-card-title {
-    font-size: larger;
+    font-size: 1.5rem;
     text-align: center;
 }
 
@@ -38,7 +38,7 @@ header {
 }
 #timer {
     font-size: xx-large;
-    color: white;
+    color: black;
 }
 
 img {
@@ -102,6 +102,10 @@ img {
     animation-name: flip-card;
 }
 
+.duration {
+    font-size: 0.8rem;
+}
+
 .done,
 .done > * {
     background-color: #575c75;
@@ -145,7 +149,7 @@ img {
     }
 
     .pose-card-title {
-        font-size: smaller;
+        font-size: medium;
     }
     .hidden {
         display: none;
