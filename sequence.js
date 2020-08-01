@@ -9,7 +9,7 @@ const poses = [
             "Alternate the side, starting with the right foot: " +
             "First the right food steps back after a forward fold, and the same right foot " +
             "steps forward after downward-facing dog. Then on the left side. " +
-            "Forgetting the details? Check this <a href= https://www.youtube.com/watch?v=AbPufvvYiSw>video</a>.",
+            "Forgetting the details? Check this <a target='_blank' href= https://www.youtube.com/watch?v=AbPufvvYiSw>video</a>.",
         imageRef: "./assets/aseq_SM1.png",
     },
     {

@@ -63,7 +63,7 @@ $(document).ready(() => {
         // Check if not paused and poses in sequence remaining.
         if (!isPaused && poseIndex < $poses.length) {
             // Set first pose, and timeout for following pose.
-            currentPoseDuration = getPoseData("duration", poseIndex) * 1000;
+            currentPoseDuration = getPoseData("duration", poseIndex) * 5000;
             currentPoseStartTime = new Date();
             currentPose = $poses.eq(poseIndex);
 
@@ -77,6 +77,7 @@ $(document).ready(() => {
             addClassToPose(currentPoseSide, poseIndex);
 
             poseTimeoutId = setTimeout(() => {
+                playNextPoseAudio();
                 if (flowInProgress) {
                     // After first pass, reset poseIndexes to the appropriate non-zero values.
                     flowStart[poseIndex] = poseIndex;
@@ -173,6 +174,11 @@ $(document).ready(() => {
             // If paused during sequence, then create new variable that takes pause time into account.
             poseTimeRemaining = currentPoseDuration - (timeOfPause - poseStartTime);
         }
+    });
+
+    // If link is clicked then pause sequence.
+    $("a").on("click", () => {
+        $("#pause-play-btn").trigger("click");
     });
 
     // ============ HELPER FUNCTIONS ============ //
