@@ -106,6 +106,7 @@ $(document).ready(() => {
             }, poseTimeRemaining - poseEndWarningTime || currentPoseDuration - poseEndWarningTime);
         } else {
             $("#pause-play-btn").trigger("click");
+            $(".pose-card").removeClass("hidden");
         }
     };
 
