@@ -162,10 +162,10 @@ img {
     .pose-card {
         margin: 10px;
         width: 80%;
-        min-height: 27vh;
+        min-height: 20vh;
     }
     .pose-card > img {
-        max-width: 150px;
+        max-width: 20vh;
     }
 }
 
@@ -175,5 +175,27 @@ img {
         margin: 10px;
         width: 28%;
         height: 72vh;
+    }
+}
+
+@media screen and (max-height: 700px) and (orientation: Portrait) {
+    .pose-card {
+        margin: 10px;
+        width: 80%;
+        min-height: 18vh;
+    }
+    .pose-card > img {
+        max-width: 17vh;
+    }
+}
+
+@media screen and (max-height: 600px) and (orientation: Portrait) {
+    .pose-card {
+        margin: 10px;
+        width: 80%;
+        min-height: 18vh;
+    }
+    .pose-card > img {
+        max-width: 13.5vh;
     }
 }
