@@ -60,7 +60,7 @@ $(document).ready(() => {
     let $poses = $(".pose-card");
 
     const updatePoseState = (currentPoseSide, poseIndex) => {
-        // Check if not paused and poses in sequence remaining.
+        // Check if not paused and if poses in sequence remaining.
         if (!isPaused && poseIndex < $poses.length) {
             // Set first pose, and timeout for following pose.
             currentPoseDuration = getPoseData("duration", poseIndex) * 60000;
