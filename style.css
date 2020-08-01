@@ -178,11 +178,22 @@ img {
     }
 }
 
+@media screen and (max-height: 800px) and (orientation: Portrait) {
+    .pose-card {
+        margin: 10px;
+        width: 80%;
+        min-height: 17.5vh;
+    }
+    .pose-card > img {
+        max-width: 19vh;
+    }
+}
+
 @media screen and (max-height: 700px) and (orientation: Portrait) {
     .pose-card {
         margin: 10px;
         width: 80%;
-        min-height: 18vh;
+        min-height: 16vh;
     }
     .pose-card > img {
         max-width: 17vh;
