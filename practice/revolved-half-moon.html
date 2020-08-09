@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Revolved Half-Moon (20 mins)</title>
+        <link rel="stylesheet" href="style.css" />
+        <link
+            rel="shortcut icon"
+            type="image/x-icon"
+            href="assets/favicon.ico"
+        />
+    </head>
+
+    <body>
+        <header>
+            <h1>Revolved Half-Moon (20 mins)</h1>
+            <div id="timer"></div>
+            <button id="pause-play-btn">
+                <img id="play-pause-img" src="assets/play-button.png" />
+            </button>
+        </header>
+        <div id="pose-container"></div>
+    </body>
+    <audio id="next-pose-audio" src="./assets/next-pose.mp3"></audio>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="revolved-half-moon.js"></script>
+    <script src="./script.js"></script>
+    <script src="./jquery.stopwatch.js"></script>
+</html>
