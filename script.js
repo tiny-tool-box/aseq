@@ -44,7 +44,7 @@ $(document).ready(() => {
 
             genOutput += `<div class="pose-card" data-twosided=${twoSided} data-duration=${item.duration} >
                   <div class="pose-card-title">${name}</div>
-                  <img src=${imageRef || "./assets/yoga-stick.png"} />
+                  <img src=${imageRef || "../assets/yoga-stick.png"} />
                    <p class=${description ? "description" : "no-description"}>${description}</p>
                   <h6 class="duration">Duration: ${
                       twoSided ? item.duration + " mins — each side" : item.duration + " mins"
@@ -156,14 +156,14 @@ $(document).ready(() => {
         $("#timer").stopwatch().stopwatch("toggle");
 
         if (isPaused) {
-            $("#play-pause-img").attr("src", "./assets/pause-button.png");
+            $("#play-pause-img").attr("src", "../assets/pause-button.png");
 
             poseStartTime = new Date();
             isPaused = false;
 
             updatePoseState(currentPoseSide, poseIndex);
         } else {
-            $("#play-pause-img").attr("src", "./assets/play-button.png");
+            $("#play-pause-img").attr("src", "../assets/play-button.png");
 
             timeOfPause = new Date();
             isPaused = true;
