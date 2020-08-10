@@ -7,7 +7,7 @@ const poses = [
             "Inhale reach the arms up. Exhale bend the knees and hinge forward from the hips, " +
             "and find a forward fold. Let the hand swing behind you and up, as far as comfortable.  " +
             "<br><Br>(1) First find a fold with knees bent generously; (2) then begin to straighten the legs."+
-            "<br><Br>Explore feet a hips-width apart vs together (toes touching, heels slightly together).",
+            "<br><Br>Explore feet at hips-width apart, vs. together (toes touching, heels slightly apart).",
         imageRef: "../assets/aseq_swings.png",
     },
     {
